@@ -1,0 +1,13 @@
+[book]
+title = "Rust + Blockchain 완전 정복"
+authors = []
+language = "ko"
+src = "src"
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+additional-css = ["theme/custom.css"]
