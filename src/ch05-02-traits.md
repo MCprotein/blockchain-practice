@@ -4,7 +4,7 @@
 
 트레이트는 타입이 구현해야 하는 동작(메서드)의 집합을 정의합니다. TypeScript의 `interface`와 유사하지만 더 강력합니다.
 
-```rust
+```rust,ignore
 // 트레이트 정의
 trait Hashable {
     // 메서드 시그니처 (구현 필수)
@@ -34,7 +34,7 @@ interface Hashable {
 
 ## 트레이트 구현
 
-```rust
+```rust,ignore
 struct Block {
     index: u64,
     data: String,
@@ -104,7 +104,7 @@ fn main() {
 
 제네릭 함수에서 타입이 특정 트레이트를 구현해야 한다고 요구할 때:
 
-```rust
+```rust,ignore
 // 방법 1: 인라인 트레이트 바운드
 fn print_hash<T: Hashable>(item: &T) {
     println!("Hash: {}", item.compute_hash());
@@ -131,7 +131,7 @@ fn process<T: Hashable + Clone + std::fmt::Display>(item: T) {
 
 컴파일 타임에 타입을 모를 때, 런타임에 트레이트를 통해 동적으로 디스패치:
 
-```rust
+```rust,ignore
 // 정적 디스패치 (제네릭) — 컴파일 타임에 타입 결정, 더 빠름
 fn hash_static<T: Hashable>(item: &T) -> String {
     item.compute_hash()
@@ -143,8 +143,17 @@ fn hash_dynamic(item: &dyn Hashable) -> String {
 }
 
 fn main() {
-    let block = Block { /* ... */ };
-    let tx = Transaction { /* ... */ };
+    let block = Block {
+        index: 1,
+        data: String::from("block data"),
+        previous_hash: String::from("0000"),
+        nonce: 7,
+    };
+    let tx = Transaction {
+        from: String::from("Alice"),
+        to: String::from("Bob"),
+        amount: 1000,
+    };
 
     // 정적 디스패치 — 각 호출에서 구체 타입을 앎
     hash_static(&block);
@@ -177,7 +186,7 @@ function hashItem(item: Hashable): string {
 
 ### Display와 Debug
 
-```rust
+```rust,ignore
 use std::fmt;
 
 struct Block {
@@ -211,7 +220,7 @@ fn main() {
 
 ### Clone과 Copy
 
-```rust
+```rust,ignore
 // Clone: 명시적 깊은 복사 (.clone() 호출)
 #[derive(Clone)]
 struct Block {
@@ -240,7 +249,7 @@ fn main() {
 
 ### PartialEq, Eq, PartialOrd, Ord
 
-```rust
+```rust,ignore
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 struct BlockHeight(u64);
 
@@ -268,7 +277,7 @@ fn main() {
 
 ### Default
 
-```rust
+```rust,ignore
 #[derive(Debug, Default)]
 struct BlockConfig {
     difficulty: usize,      // 기본값: 0
@@ -308,7 +317,7 @@ fn main() {
 
 ### Iterator 트레이트 (6.3장에서 자세히)
 
-```rust
+```rust,ignore
 struct CountingIterator {
     current: u64,
     max: u64,
@@ -352,7 +361,7 @@ fn main() {
 
 `#[derive(...)]`는 표준 트레이트의 기계적인 구현을 자동으로 생성합니다:
 
-```rust
+```rust,ignore
 #[derive(
     Debug,      // {:?} 출력
     Clone,      // .clone() 메서드
@@ -391,17 +400,32 @@ struct TransactionId {
 - **외부 타입**에 **내가 만든 트레이트** 구현 가능
 - **외부 타입**에 **외부 트레이트** 구현 불가능 (고아 규칙 위반)
 
-```rust
+```rust,ignore
 use std::fmt;
 
 // OK: 내 타입(Block)에 외부 트레이트(Display) 구현
-impl fmt::Display for Block { /* ... */ }
+impl fmt::Display for Block {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Block #{}", self.index)
+    }
+}
 
 // OK: 외부 타입(Vec<Block>)에 내 트레이트(Hashable) 구현
-impl Hashable for Vec<Block> { /* ... */ }
+impl Hashable for Vec<Block> {
+    fn compute_hash(&self) -> String {
+        self.iter()
+            .map(|block| block.compute_hash())
+            .collect::<Vec<_>>()
+            .join("")
+    }
+}
 
 // 에러: 외부 타입(String)에 외부 트레이트(Display) 구현 불가
-// impl fmt::Display for String { /* ... */ }
+// impl fmt::Display for String {
+//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//         write!(f, "{self}")
+//     }
+// }
 // error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate
 ```
 
@@ -420,7 +444,7 @@ interface Serializable {
 class Block implements Serializable, Hashable {
     serialize(): string { return JSON.stringify(this); }
     deserialize(data: string): void { Object.assign(this, JSON.parse(data)); }
-    computeHash(): string { return "..."; }
+    computeHash(): string { return this.serialize(); }
 }
 
 // TypeScript는 인터페이스 확장 가능
@@ -429,7 +453,7 @@ interface ExtendedHashable extends Hashable {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust
 trait Serializable {
     fn serialize(&self) -> String;
@@ -459,7 +483,9 @@ impl ExtendedHashable for Block {
 }
 // Hashable도 별도로 구현해야 함 (ExtendedHashable의 supertrait이므로)
 impl Hashable for Block {
-    fn compute_hash(&self) -> String { /* ... */ String::new() }
+    fn compute_hash(&self) -> String {
+        format!("{}:{}:{}", self.index, self.previous_hash, self.nonce)
+    }
 }
 ```
 
@@ -478,7 +504,7 @@ impl Hashable for Block {
 
 트레이트에서 출력 타입을 정의하는 또 다른 방법:
 
-```rust
+```rust,ignore
 trait BlockStore {
     type Block;    // 연관 타입
     type Error;

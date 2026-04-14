@@ -6,7 +6,7 @@ Solana에서 **프로그램(Program)**은 이더리움의 스마트 컨트랙트
 
 그러나 결정적인 차이가 있습니다:
 
-```
+```text
 이더리움 스마트 컨트랙트:     Solana 프로그램:
 ┌────────────────────┐        ┌────────────────────┐
 │  Counter Contract  │        │  Counter Program   │
@@ -32,7 +32,7 @@ Solana에서 **프로그램(Program)**은 이더리움의 스마트 컨트랙트
 
 Solana에서 프로그램을 호출하는 단위는 **Instruction**입니다. 이더리움에서 컨트랙트 함수를 호출하는 것과 유사하지만, 구조가 더 명시적입니다.
 
-```rust
+```rust,ignore
 // Instruction의 세 가지 구성요소
 
 pub struct Instruction {
@@ -83,7 +83,7 @@ const instruction = new TransactionInstruction({
 
 **Transaction**은 하나 이상의 Instruction을 묶은 것입니다. 이더리움과 달리 **여러 Instruction이 하나의 Transaction에 포함될 수 있으며, 이는 원자적(atomic)으로 실행됩니다**.
 
-```
+```text
 Transaction
 ├── 헤더 (서명자 수, 읽기 전용 계정 수 등)
 ├── 계정 주소 목록 (중복 제거된 모든 Account)
@@ -140,7 +140,7 @@ Solana의 Instruction `data` 필드와 Account `data` 필드는 모두 바이트
 
 ### Borsh vs JSON 비교
 
-```
+```text
 JSON 직렬화:
 {"action": "increment", "amount": 5}
 → 33 bytes, 파싱 오버헤드 있음
@@ -157,7 +157,7 @@ Borsh 직렬화:
 - Rust, JavaScript, Python 등 다양한 언어 지원
 ```
 
-```rust
+```rust,ignore
 // Rust에서 Borsh 사용
 use borsh::{BorshDeserialize, BorshSerialize};
 
@@ -218,7 +218,7 @@ Anchor 프레임워크 없이 Raw Rust로 카운터 프로그램을 작성해보
 
 ### 프로젝트 구조
 
-```
+```text
 counter/
 ├── Cargo.toml
 └── src/
@@ -244,7 +244,7 @@ borsh-derive = "0.10"
 
 ### src/lib.rs - 완전한 카운터 프로그램
 
-```rust
+```rust,ignore
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
@@ -488,7 +488,7 @@ fn process_reset(accounts: &[AccountInfo]) -> ProgramResult {
 
 ## 이더리움 컨트랙트 호출과의 비교
 
-```
+```text
 이더리움 (Solidity):
 ─────────────────────────────────────────────────────
 // 컨트랙트 배포 후 영구 주소
@@ -599,7 +599,7 @@ async function incrementCounter(
 
 ## 핵심 정리
 
-```
+```text
 Solana 프로그램 실행 흐름:
 
 사용자

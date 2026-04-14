@@ -25,7 +25,7 @@
 
 ### 프로젝트 구조
 
-```
+```text
 token-vault/
 ├── foundry.toml
 ├── remappings.txt
@@ -867,12 +867,13 @@ forge coverage
 ```
 
 예상 출력:
-```
+```text
 Running 20 tests for test/Vault.t.sol:VaultTest
 [PASS] test_Deposit() (gas: 98234)
 [PASS] test_Withdraw() (gas: 75123)
 [PASS] test_Pause() (gas: 45678)
-...
+[PASS] test_RevertWhen_DepositZero() (gas: 31890)
+[PASS] test_RevertWhen_WithdrawTooMuch() (gas: 40211)
 Test result: ok. 20 passed; 0 failed; finished in 45.23ms
 ```
 
@@ -955,7 +956,7 @@ forge script script/Deploy.s.sol \
 
 이 프로젝트를 기반으로 다음 기능을 추가해볼 수 있다:
 
-```
+```text
 1. 이자 기능
    - 예치 기간에 비례한 이자 계산
    - 블록 번호나 타임스탬프 기반 이자율

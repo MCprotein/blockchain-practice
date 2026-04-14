@@ -1,10 +1,10 @@
 # CLAUDE.md — Rust + Blockchain 완전 정복
 
-이 파일은 Claude Code AI 어시스턴트를 위한 프로젝트 지침서입니다.
+이 파일은 Claude Code 및 OpenAI Codex 같은 AI 코딩 어시스턴트를 위한 프로젝트 지침서입니다. 이 저장소의 콘텐츠는 Claude Code와 Codex를 함께 사용해 작성, 검토, 보강합니다.
 
 ## 프로젝트 개요
 
-**mdBook 기반 한국어 학습 가이드북**으로, Node.js/TypeScript 백엔드 개발자(4년차 수준)가 Rust 언어와 블록체인 개발을 30일 커리큘럼으로 학습하는 자료입니다.
+**mdBook 기반 한국어 학습 가이드북**으로, Node.js/TypeScript 백엔드 개발자(4년차 수준)가 Rust 언어와 블록체인 개발을 30일 커리큘럼으로 학습하는 자료입니다. Rust를 먼저 끝낸 뒤 블록체인으로 넘어가는 구성이 아니라, Rust 문법과 블록체인 개념/실습을 번갈아 배우는 병렬 학습 흐름을 유지합니다.
 
 - 사이트: https://mcprotein.github.io/blockchain-practice/
 - 언어: 한국어 (Korean)
@@ -34,6 +34,7 @@ blockchain-practice/
 ├── src/                   # 모든 콘텐츠 마크다운 파일
 │   ├── SUMMARY.md         # 목차 — 네비게이션의 단일 진실 공급원 (SSoT)
 │   ├── introduction.md    # 서문
+│   ├── ch00-XX-*.md       # 용어와 코드 읽기 지도
 │   ├── ch01-XX-*.md       # 1장: Rust 시작하기
 │   ├── ch02-XX-*.md       # 2장: 소유권과 빌림
 │   ├── ch03-XX-*.md       # 3장: 구조체, 열거형, 패턴 매칭
@@ -103,9 +104,13 @@ SUMMARY.md 항목 형식:
 
 ### 코드 예제
 
-- 코드 예제는 반드시 **실행 가능**하게 작성합니다
-- Rust 예제는 `mdbook test`로 검증 가능한 형태를 권장합니다
-- 언어 태그를 명시합니다: ` ```rust `, ` ```solidity `, ` ```typescript `
+- 코드 예제는 가능한 한 **실행 가능**하게 작성합니다
+- 독립 실행 가능한 Rust 예제는 ` ```rust `로 두고 `mdbook test` 검증 대상에 포함합니다
+- 일부러 실패를 설명하는 Rust 예제는 ` ```rust,compile_fail `로 표시합니다
+- 외부 크레이트, 프로젝트 전체 맥락, Anchor/Alloy/Tokio 설정 등이 필요한 조각 예제는 ` ```rust,ignore ` 또는 ` ```rust,no_run `로 표시합니다
+- 실행 출력, 디렉토리 트리, 개념도는 ` ```text `로 표시합니다
+- 언어 태그를 명시합니다: ` ```rust,ignore `, ` ```solidity `, ` ```typescript `, ` ```bash `, ` ```text `
+- 태그 없는 코드펜스(` ``` `)는 만들지 않습니다
 
 ### Node.js 개발자 대상 비교
 
@@ -139,6 +144,16 @@ let b = a; // a의 소유권이 b로 이동
 - interface/class ↔ struct + trait
 - npm/package.json ↔ cargo/Cargo.toml
 - NestJS 의존성 주입 ↔ Rust 모듈 시스템
+
+### 학습 순서
+
+목차는 Rust와 블록체인을 교차 배치합니다. Rust 기초만 길게 몰아넣거나 블록체인 이론만 길게 몰아넣지 않습니다.
+
+기본 리듬:
+1. Rust 문법 또는 타입 모델을 하나 소개합니다.
+2. 그 문법이 필요한 블록체인 개념을 설명합니다.
+3. TypeScript/Node.js 비교로 독자의 기존 지식과 연결합니다.
+4. 미니프로젝트나 실무 코드 리딩으로 묶습니다.
 
 ## 배포
 
@@ -182,3 +197,4 @@ additional-css = ["theme/custom.css"]
 - `.omc/` 디렉토리는 AI 에이전트 상태 파일이므로 커밋하지 않습니다
 - `SUMMARY.md`에 없는 파일은 빌드 후 사이트에 노출되지 않습니다
 - 챕터 파일을 삭제하거나 이름을 바꿀 때 `SUMMARY.md`도 함께 수정합니다
+- AI 어시스턴트가 만든 초안도 `mdbook build`, `mdbook test`, `git diff --check`를 통과한 뒤 커밋합니다

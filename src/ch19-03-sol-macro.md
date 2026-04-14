@@ -6,7 +6,7 @@
 
 이것이 왜 강력한가? 런타임에 ABI를 해석하는 대신, 컴파일 타임에 타입을 확인한다. 잘못된 함수 인자를 전달하면 컴파일 에러가 발생한다. Node.js의 `ethers.js`는 런타임까지 이런 오류를 발견하지 못한다.
 
-```
+```text
 ethers.js 방식:
   contract.transfer(address, amount)  ← 런타임에 ABI 인코딩, 타입 체크 없음
 
@@ -21,7 +21,7 @@ sol! 매크로 방식:
 
 ### 기본 사용법
 
-```rust
+```rust,ignore
 use alloy::sol;
 
 // 단순 인터페이스
@@ -55,7 +55,7 @@ sol! {
 
 `sol!` 매크로는 다음 Rust 타입들을 자동 생성한다:
 
-```rust
+```rust,ignore
 // sol! { contract Counter { ... } } 가 생성하는 것들:
 
 // 1. 함수 호출 타입 (각 함수마다)
@@ -80,7 +80,7 @@ Counter::new(address, provider)  // ContractInstance 반환
 
 RPC 호출을 위한 메서드를 생성하려면 `#[sol(rpc)]` 속성이 필요하다:
 
-```rust
+```rust,ignore
 use alloy::sol;
 
 sol! {
@@ -109,7 +109,7 @@ let call_data = Counter::incrementCall {}.abi_encode();  // 가능
 
 Solidity의 구조체, 배열, 매핑을 처리하는 방법:
 
-```rust
+```rust,ignore
 use alloy::sol;
 
 sol! {
@@ -197,7 +197,7 @@ Foundry가 생성하는 ABI JSON 파일 (`out/TraceRecord.sol/TraceRecord.json`)
 
 ### JSON ABI 파일에서 로드
 
-```rust
+```rust,ignore
 use alloy::sol;
 
 // 방법 1: ABI만 있는 JSON
@@ -232,7 +232,7 @@ abi-dir = "abi/"
 # 또는 build.rs 작성
 ```
 
-```rust
+```rust,ignore
 // build.rs
 fn main() {
     // ABI 파일이 바뀌면 재컴파일
@@ -244,7 +244,7 @@ fn main() {
 
 실제로 생성된 타입을 어떻게 활용하는지 보여주는 상세 예제:
 
-```rust
+```rust,ignore
 use alloy::{
     primitives::{Address, FixedBytes, U256},
     sol,
@@ -299,7 +299,7 @@ fn parse_event_log(log: &alloy::rpc::types::Log) -> Option<TraceRecord::RecordAd
 
 ### 과거 이벤트 조회
 
-```rust
+```rust,ignore
 use alloy::{
     primitives::Address,
     providers::{Provider, ProviderBuilder},
@@ -356,7 +356,7 @@ async fn get_past_transfer_events(
 
 ### 특정 주소가 관련된 이벤트만 필터링
 
-```rust
+```rust,ignore
 async fn get_transfers_for_address(
     provider: &impl Provider,
     token_address: Address,
@@ -395,7 +395,7 @@ async fn get_transfers_for_address(
 
 ### WebSocket으로 실시간 이벤트 구독
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::transports::ws::WsConnect;
 use futures_util::StreamExt;
@@ -429,7 +429,7 @@ async fn subscribe_to_events(token_address: Address) -> eyre::Result<()> {
 
 ## 전체 예제: ERC-20 컨트랙트와 상호작용하는 Rust 클라이언트
 
-```rust
+```rust,ignore
 use alloy::{
     network::EthereumWallet,
     primitives::{address, Address, U256},
@@ -676,7 +676,7 @@ async fn main() -> Result<()> {
 
 ### 1. 반환 타입 접근
 
-```rust
+```rust,ignore
 // sol! 생성 타입의 반환값은 구조체임
 let result = contract.balanceOf(addr).call().await?;
 // result는 ERC20::balanceOfReturn { _0: U256 }
@@ -691,7 +691,7 @@ let balance: U256 = result._0;
 
 ### 2. bytes32 처리
 
-```rust
+```rust,ignore
 use alloy::primitives::FixedBytes;
 
 // bytes32는 FixedBytes<32>로 매핑됨
@@ -707,7 +707,7 @@ let data: Vec<u8> = vec![1, 2, 3]; // 반드시 32바이트여야 함
 
 ### 3. string 처리
 
-```rust
+```rust,ignore
 // Solidity string → Rust String
 let result = contract.getName().call().await?;
 let name: String = result._0; // 이미 String

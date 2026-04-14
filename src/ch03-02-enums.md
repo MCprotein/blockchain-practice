@@ -20,7 +20,7 @@ type Message =
     | { type: "ChangeColor"; r: number; g: number; b: number };
 ```
 
-```rust
+```rust,ignore
 // Rust enum — 단순 배리언트
 enum Direction {
     North,
@@ -42,7 +42,7 @@ enum Message {
 
 ## 기본 열거형 정의와 사용
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 enum TransactionStatus {
     Pending,
@@ -79,7 +79,7 @@ fn main() {
 
 ## 데이터를 가진 열거형
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 enum Transaction {
     // 데이터 없음
@@ -145,7 +145,7 @@ fn main() {
 
 열거형에도 메서드를 구현할 수 있습니다:
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 enum NetworkType {
     Mainnet,
@@ -196,7 +196,7 @@ fn main() {
 
 Rust에는 `null`이 없습니다. 대신 `Option<T>` 열거형을 사용합니다.
 
-```rust
+```rust,ignore
 // 표준 라이브러리에 이렇게 정의되어 있음
 enum Option<T> {
     Some(T),  // 값이 있음
@@ -209,8 +209,15 @@ TypeScript의 `null`/`undefined`와 비교:
 ```typescript
 // TypeScript
 function findBlock(index: number): Block | null {
-    // ...
-    return null;  // 찾지 못했을 때
+    const blocks = [
+        { index: 0, hash: "genesis" },
+        { index: 1, hash: "abc123" },
+    ];
+    const found = blocks.find((block) => block.index === index);
+    if (!found) {
+        return null;
+    }
+    return found;
 }
 
 const block = findBlock(5);
@@ -221,14 +228,23 @@ if (block !== null) {
 // 하지만 런타임에 null이 올 수 있는 상황이 많음
 ```
 
-```rust
+```rust,ignore
 // Rust
+struct Block {
+    index: u64,
+    hash: String,
+}
+
 fn find_block(blocks: &[Block], index: u64) -> Option<&Block> {
     blocks.iter().find(|b| b.index == index)
 }
 
 fn main() {
-    let blocks = vec![/* ... */];
+    let blocks = vec![
+        Block { index: 0, hash: String::from("genesis") },
+        Block { index: 1, hash: String::from("abc123") },
+        Block { index: 5, hash: String::from("def456") },
+    ];
     let result = find_block(&blocks, 5);
 
     // Option을 처리하지 않으면 컴파일 에러!
@@ -246,7 +262,7 @@ fn main() {
 
 ### Option 관련 주요 메서드
 
-```rust
+```rust,ignore
 fn main() {
     let some_val: Option<i32> = Some(42);
     let no_val: Option<i32> = None;
@@ -296,7 +312,7 @@ fn compute_default() -> i32 { 42 }
 
 ### 블록체인에서 Option 활용
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 struct Block {
     index: u64,
@@ -376,7 +392,7 @@ function handleEvent(event: WalletEvent): void {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust enum — 훨씬 간결하고 타입 안전
 #[derive(Debug)]
 enum WalletEvent {

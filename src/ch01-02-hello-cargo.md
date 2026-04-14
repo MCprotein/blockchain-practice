@@ -245,7 +245,7 @@ pretty_assertions = "1.4"
 
 ### 컴파일 과정
 
-```
+```text
 src/main.rs
     ↓
   rustc (컴파일러)
@@ -255,7 +255,7 @@ target/debug/mini-blockchain  (실행 파일)
 
 TypeScript와 비교:
 
-```
+```text
 src/main.ts
     ↓
   tsc (TypeScript 컴파일러)
@@ -299,7 +299,7 @@ IDE(rust-analyzer)는 내부적으로 `cargo check`를 지속적으로 실행하
 
 여러 관련 크레이트를 하나의 저장소에서 관리할 때 사용합니다. Node.js의 monorepo(npm workspaces, Turborepo)와 유사합니다.
 
-```
+```text
 blockchain-workspace/
 ├── Cargo.toml          # 워크스페이스 루트
 ├── core/               # 핵심 블록체인 로직 (라이브러리)
@@ -339,9 +339,20 @@ core = { path = "../core" }
 
 Rust의 모듈 시스템은 Node.js의 `import/export`와 다릅니다. 파일 이름이 모듈 이름이 됩니다.
 
+처음에는 다음 대응만 기억하세요.
+
+| Node.js/TypeScript | Rust |
+|--------------------|------|
+| `import { sha256 } from "./crypto"` | `mod crypto; use crypto::sha256;` |
+| `export function sha256(...)` | `pub fn sha256(...)` |
+| `export class Block` | `pub struct Block` + `impl Block` |
+| `models/index.ts`에서 re-export | `models/mod.rs`에서 `pub use` |
+
+Rust는 파일을 만들었다고 자동으로 import하지 않습니다. `mod crypto;`처럼 “이 파일을 모듈 트리에 포함한다”고 선언해야 합니다.
+
 ### 기본 모듈 선언
 
-```rust
+```rust,ignore
 // src/main.rs
 mod crypto;    // src/crypto.rs 또는 src/crypto/mod.rs 를 모듈로 선언
 mod models;    // src/models.rs 또는 src/models/mod.rs
@@ -352,18 +363,24 @@ use models::Block;
 fn main() {
     let hash = sha256("hello");
     let block = Block::new();
+
+    println!("hash = {}", hash);
+    println!("block #{} = {}", block.index, block.hash);
 }
 ```
 
-```rust
+```rust,ignore
 // src/crypto.rs
+use sha2::{Digest, Sha256};
+
 pub fn sha256(input: &str) -> String {
-    // 구현
-    todo!()
+    let mut hasher = Sha256::new();
+    hasher.update(input.as_bytes());
+    hex::encode(hasher.finalize())
 }
 ```
 
-```rust
+```rust,ignore
 // src/models.rs
 pub struct Block {
     pub index: u64,
@@ -380,9 +397,11 @@ impl Block {
 }
 ```
 
+이 예제에서 `pub`은 “다른 모듈에서도 접근 가능”이라는 뜻입니다. `pub`이 없으면 같은 파일 또는 같은 모듈 안에서만 접근할 수 있습니다. TypeScript에서 `export`를 붙이지 않으면 다른 파일에서 import할 수 없는 것과 비슷합니다.
+
 ### 하위 디렉토리 모듈
 
-```
+```text
 src/
 ├── main.rs
 └── models/
@@ -391,7 +410,7 @@ src/
     └── tx.rs       # models::tx 서브모듈
 ```
 
-```rust
+```rust,ignore
 // src/models/mod.rs
 pub mod block;
 pub mod tx;
@@ -401,7 +420,7 @@ pub use block::Block;
 pub use tx::Transaction;
 ```
 
-```rust
+```rust,ignore
 // src/main.rs
 mod models;
 use models::Block;  // models/mod.rs에서 re-export 했으므로 가능

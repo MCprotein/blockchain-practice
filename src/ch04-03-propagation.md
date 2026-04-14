@@ -6,7 +6,7 @@
 
 ### 기본 동작
 
-```rust
+```rust,ignore
 // ? 없이 — 장황한 코드
 fn read_block_from_file(path: &str) -> Result<Block, std::io::Error> {
     let content = match std::fs::read_to_string(path) {
@@ -30,7 +30,7 @@ fn read_block_from_file(path: &str) -> Result<Block, Box<dyn std::error::Error>>
 
 `?`는 다음과 동등합니다:
 
-```rust
+```rust,ignore
 // 이 두 코드는 동일
 let value = some_result?;
 
@@ -46,7 +46,7 @@ let value = match some_result {
 
 `?`는 내부적으로 `From` 트레이트를 이용해 에러 타입을 변환합니다.
 
-```rust
+```rust,ignore
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -74,7 +74,7 @@ fn load_blockchain(path: &str) -> Result<Blockchain, AppError> {
 
 ### From 트레이트 직접 구현
 
-```rust
+```rust,ignore
 use std::io;
 use std::num::ParseIntError;
 
@@ -111,7 +111,7 @@ fn load_height_from_file(path: &str) -> Result<u64, MyError> {
 
 `?`는 `Option`에서도 동작합니다:
 
-```rust
+```rust,ignore
 fn get_first_block_hash(chain: &Blockchain) -> Option<&str> {
     let first = chain.blocks.first()?;  // None이면 즉시 return None
     let hash = first.hash.get(..8)?;    // None이면 즉시 return None
@@ -121,7 +121,7 @@ fn get_first_block_hash(chain: &Blockchain) -> Option<&str> {
 
 단, `Option`을 반환하는 함수에서만 `?`를 쓸 수 있습니다. `Result`를 반환하는 함수에서 `Option`에 `?`를 쓰려면 변환이 필요합니다:
 
-```rust
+```rust,ignore
 fn process(chain: &Blockchain) -> Result<String, AppError> {
     let first = chain.blocks.first()
         .ok_or(AppError::EmptyChain)?;  // Option → Result 변환 후 ?
@@ -135,7 +135,7 @@ fn process(chain: &Blockchain) -> Result<String, AppError> {
 
 `main` 함수도 `Result`를 반환할 수 있습니다:
 
-```rust
+```rust,ignore
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -148,13 +148,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 에러가 발생하면 프로그램이 에러 메시지를 출력하고 종료합니다:
 
-```
+```text
 Error: Os { code: 2, kind: NotFound, message: "No such file or directory" }
 ```
 
 `anyhow`를 사용하면 더 나은 에러 출력:
 
-```rust
+```rust,ignore
 fn main() -> anyhow::Result<()> {
     let content = std::fs::read_to_string("blockchain.json")
         .context("Failed to open blockchain.json")?;
@@ -199,7 +199,7 @@ export class BlockService {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust + axum — Result를 반환하고 IntoResponse 구현으로 HTTP 변환
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde_json::json;
@@ -262,7 +262,7 @@ async fn add_block(Json(data): Json<CreateBlockRequest>) -> Result<Json<Block>, 
 
 실제 코드에서 여러 에러 처리를 체이닝하는 패턴:
 
-```rust
+```rust,ignore
 use anyhow::{Context, Result};
 
 async fn process_new_block(
@@ -299,7 +299,7 @@ async fn process_new_block(
 
 ### 에러 로깅 패턴
 
-```rust
+```rust,ignore
 use tracing::{error, warn, info};
 
 async fn handle_transaction(tx: Transaction) {

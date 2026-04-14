@@ -22,7 +22,7 @@
 
 ### 공격 원리
 
-```
+```text
 정상 출금 흐름:
 1. 사용자가 withdraw() 호출
 2. 잔액 확인 (충분한 잔액)
@@ -216,7 +216,7 @@ function _transfer(address from, address to, uint256 amount) internal {
 
 `tx.origin`은 트랜잭션을 최초 시작한 EOA(외부 계정)다. `msg.sender`는 현재 함수의 직접 호출자다.
 
-```
+```text
 EOA(Alice) → ContractA → ContractB.foo()
 
 ContractB.foo() 내부:
@@ -288,7 +288,7 @@ contract SecureWallet {
 
 블록체인의 트랜잭션은 확정되기 전에 멤풀(mempool)에 공개된다. 채굴자나 다른 참여자가 이 정보를 보고 자신의 트랜잭션을 먼저 끼워넣을 수 있다.
 
-```
+```text
 Alice의 트랜잭션: DEX에서 토큰 A를 100 ETH로 구매 (멤풀에 공개)
              ↓
 공격자(Bot)가 발견: Alice의 구매로 가격이 오를 것을 예측
@@ -314,7 +314,8 @@ function swap(
 ) external {
     uint256 amountOut = _calculateOutput(tokenIn, tokenOut, amountIn);
     require(amountOut >= minAmountOut, "Slippage too high");
-    // ...
+    IERC20(tokenIn).transferFrom(msg.sender, address(this), amountIn);
+    IERC20(tokenOut).transfer(msg.sender, amountOut);
 }
 
 // 2. Commit-Reveal 패턴 (게임, 경매에서)
@@ -340,7 +341,7 @@ function reveal(uint256 value, bytes32 salt) external {
 
 플래시론(Flash Loan)은 동일 트랜잭션 안에서 담보 없이 거액을 빌리고 갚는 DeFi 기능이다. 정당한 용도(차익거래, 담보 교환)도 있지만 공격에 악용될 수 있다.
 
-```
+```text
 공격 예시 (가격 조작):
 1. 플래시론으로 100만 ETH 대출
 2. 소형 DEX에서 특정 토큰 대량 매입 → 가격 조작
@@ -414,7 +415,7 @@ function deposit(address token, uint256 amount) external {
 
 ## 안전한 컨트랙트 작성 체크리스트
 
-```
+```text
 [ ] CEI 패턴 준수 (Checks → Effects → Interactions)
 [ ] nonReentrant 적용 (ETH/토큰 전송이 있는 모든 함수)
 [ ] Solidity 0.8+ 사용 (자동 오버플로 방지)

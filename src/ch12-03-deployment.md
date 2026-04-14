@@ -159,12 +159,12 @@ anvil
 # ==================
 # (0) 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
 # (1) 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 (10000 ETH)
-# ...
+# (2) 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC (10000 ETH)
 #
 # Private Keys
 # ==================
 # (0) 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-# ...
+# (1) 0x59c6995e998f97a5a0044966f094538cb70b0d2f517b7d49da0d4d5d18258f6d
 #
 # Listening on 127.0.0.1:8545
 ```
@@ -233,7 +233,7 @@ forge script script/Deploy.s.sol:DeploySimpleToken \
 
 배포 후 `broadcast/` 디렉토리에 트랜잭션 정보가 저장된다:
 
-```
+```text
 broadcast/
 └── Deploy.s.sol/
     ├── 31337/                    # chain ID

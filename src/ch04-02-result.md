@@ -4,7 +4,7 @@
 
 `Result<T, E>`는 성공(`Ok(T)`) 또는 실패(`Err(E)`)를 나타내는 열거형입니다:
 
-```rust
+```rust,ignore
 // 표준 라이브러리에 이렇게 정의되어 있음
 enum Result<T, E> {
     Ok(T),   // 성공: 값 T를 담고 있음
@@ -26,7 +26,7 @@ async function parseBlockHeight(s: string): Promise<number> {
 type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 ```
 
-```rust
+```rust,ignore
 // Rust: 에러가 반환 타입에 명시됨
 fn parse_block_height(s: &str) -> Result<u64, String> {
     s.parse::<u64>().map_err(|e| format!("Invalid height: {}", e))
@@ -37,7 +37,7 @@ fn parse_block_height(s: &str) -> Result<u64, String> {
 
 ## Result 반환하기
 
-```rust
+```rust,ignore
 use std::num::ParseIntError;
 
 fn parse_height(s: &str) -> Result<u64, ParseIntError> {
@@ -63,7 +63,7 @@ fn validate_block_index(index: u64, chain_len: usize) -> Result<(), String> {
 
 ### 1. match로 처리
 
-```rust
+```rust,ignore
 fn main() {
     let result = parse_height("42");
 
@@ -85,7 +85,7 @@ fn main() {
 
 ### 2. unwrap() — 빠르게 쓰되 주의
 
-```rust
+```rust,ignore
 fn main() {
     // Ok이면 값 반환, Err이면 panic!
     let height = "42".parse::<u64>().unwrap();
@@ -101,7 +101,7 @@ fn main() {
 
 ### 3. expect() — 더 나은 에러 메시지
 
-```rust
+```rust,ignore
 fn main() {
     let config_path = std::env::var("CONFIG_PATH")
         .expect("CONFIG_PATH environment variable must be set");
@@ -115,7 +115,7 @@ fn main() {
 
 ### 4. unwrap_or() — 기본값
 
-```rust
+```rust,ignore
 fn main() {
     let height: u64 = "abc".parse().unwrap_or(0);
     println!("{}", height);  // 0 (파싱 실패 시 기본값)
@@ -132,7 +132,7 @@ fn main() {
 
 ### 5. map() — Ok 값 변환
 
-```rust
+```rust,ignore
 fn main() {
     // Ok(42) → Ok("42 blocks")
     let result: Result<String, _> = "42".parse::<u64>()
@@ -148,7 +148,7 @@ fn main() {
 
 ### 6. map_err() — Err 값 변환
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 enum AppError {
     ParseError(String),
@@ -163,7 +163,7 @@ fn parse_height(s: &str) -> Result<u64, AppError> {
 
 ### 7. and_then() — Ok일 때 다음 연산 (flatMap)
 
-```rust
+```rust,ignore
 fn get_block_hash(height_str: &str, blockchain: &Blockchain) -> Result<String, AppError> {
     "42".parse::<u64>()
         .map_err(|e| AppError::ParseError(e.to_string()))
@@ -177,7 +177,7 @@ fn get_block_hash(height_str: &str, blockchain: &Blockchain) -> Result<String, A
 
 ### 8. is_ok(), is_err()
 
-```rust
+```rust,ignore
 fn main() {
     let ok: Result<i32, &str> = Ok(42);
     let err: Result<i32, &str> = Err("oops");
@@ -195,7 +195,7 @@ fn main() {
 
 ### 방법 1: 단순 String 에러 (간단하지만 제한적)
 
-```rust
+```rust,ignore
 fn parse(s: &str) -> Result<u64, String> {
     s.parse::<u64>().map_err(|e| e.to_string())
 }
@@ -203,7 +203,7 @@ fn parse(s: &str) -> Result<u64, String> {
 
 ### 방법 2: 열거형 에러 타입 (권장)
 
-```rust
+```rust,ignore
 use std::fmt;
 
 #[derive(Debug)]
@@ -251,7 +251,7 @@ impl std::error::Error for BlockchainError {}
 thiserror = "1.0"
 ```
 
-```rust
+```rust,ignore
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -286,7 +286,7 @@ enum BlockchainError {
 
 ## 실제 블록체인 코드에서의 에러 처리
 
-```rust
+```rust,ignore
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -383,7 +383,7 @@ fn main() {
 anyhow = "1.0"
 ```
 
-```rust
+```rust,ignore
 use anyhow::{Context, Result, anyhow, bail};
 
 fn main() -> Result<()> {  // anyhow::Result = Result<T, anyhow::Error>

@@ -4,10 +4,25 @@
 
 이 장에서는 1주차에 배운 내용을 중심으로 실제로 동작하는 블록체인을 Rust로 구현합니다.
 
-> **참고**: 이 프로젝트에서는 `Result<T, E>`, `?` 연산자, `thiserror`, `Vec`의 이터레이터 등
-> 아직 다루지 않은 개념이 일부 등장합니다. 지금은 코드를 그대로 따라 치면서 **블록체인 구조를
-> 이해하는 데 집중**하세요. 이 문법들은 2주차(에러 처리, 트레이트)와 3주차(컬렉션, 이터레이터)에서
-> 본격적으로 배웁니다. 그때 다시 이 코드를 보면 "아, 이런 의미였구나" 하고 이해될 것입니다.
+> **읽는 방법**: 이 프로젝트에서는 `Result<T, E>`, `?` 연산자, `thiserror`, `Vec`의 이터레이터 등
+> 아직 다루지 않은 개념이 일부 등장합니다. 지금은 문법을 모두 외우려고 하지 말고 **블록체인의 데이터 흐름**을 먼저 잡으세요.
+> 문법은 2주차(에러 처리, 트레이트)와 3주차(컬렉션, 이터레이터)에서 본격적으로 배웁니다.
+
+이 장에서 만들 프로그램은 실제 비트코인이나 이더리움처럼 네트워크 합의까지 구현하지 않습니다. 목표는 더 작습니다.
+
+```text
+데이터 문자열을 받는다
+        ↓
+Block 구조체에 담는다
+        ↓
+이전 블록 해시와 연결한다
+        ↓
+Proof of Work 조건을 만족할 때까지 nonce를 바꾼다
+        ↓
+체인 전체가 변조되지 않았는지 검증한다
+```
+
+즉, 이 장의 핵심은 “블록체인이 왜 변조를 감지할 수 있는가”를 코드로 확인하는 것입니다.
 
 **구현 내용:**
 - SHA-256 해싱
@@ -62,7 +77,7 @@ env_logger = "0.10"
 
 ## 전체 프로젝트 구조
 
-```
+```text
 mini-blockchain/
 ├── Cargo.toml
 └── src/
@@ -73,11 +88,34 @@ mini-blockchain/
     └── crypto.rs        # 해싱 유틸리티
 ```
 
+파일별 책임을 먼저 잡고 들어가면 긴 코드가 덜 부담스럽습니다.
+
+| 파일 | 책임 | 먼저 볼 질문 |
+|------|------|--------------|
+| `crypto.rs` | SHA-256 해시 계산 | 같은 입력이 항상 같은 해시가 되는가? |
+| `block.rs` | 블록 하나의 데이터와 동작 | 블록 해시가 어떤 필드로 계산되는가? |
+| `blockchain.rs` | 블록 목록과 검증 규칙 | 새 블록이 이전 블록과 어떻게 연결되는가? |
+| `error.rs` | 실패 상황을 타입으로 표현 | 어떤 상황을 에러로 볼 것인가? |
+| `main.rs` | CLI 실행 흐름 | 사용자가 어떤 명령으로 동작을 실행하는가? |
+
+이 순서대로 읽으면 됩니다: `crypto.rs` → `block.rs` → `blockchain.rs` → `main.rs`.
+
 ---
 
 ## src/error.rs: 에러 타입
 
-```rust
+Rust는 예외를 던지는 대신 `Result<T, E>`로 성공과 실패를 값처럼 반환합니다. 아래 파일은 이 프로젝트에서 발생할 수 있는 실패를 `BlockchainError`라는 열거형으로 모아둡니다.
+
+처음 보는 문법은 이렇게 읽으세요.
+
+| 문법 | 뜻 |
+|------|----|
+| `enum BlockchainError` | 가능한 에러 종류를 하나의 타입으로 묶음 |
+| `#[derive(Error, Debug)]` | `thiserror`가 에러 출력 코드를 자동 생성 |
+| `#[error("...")]` | 사람이 읽을 에러 메시지 형식 |
+| `pub type Result<T>` | 이 프로젝트 안에서 쓸 짧은 `Result` 별칭 |
+
+```rust,ignore
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -108,7 +146,9 @@ pub type Result<T> = std::result::Result<T, BlockchainError>;
 
 ## src/crypto.rs: SHA-256 해싱
 
-```rust
+블록체인의 변조 감지는 해시에서 시작합니다. 이 파일은 “바이트 또는 문자열을 넣으면 SHA-256 해시 문자열을 돌려주는 작은 유틸리티”입니다.
+
+```rust,ignore
 use sha2::{Sha256, Digest};
 
 /// 입력 데이터의 SHA-256 해시를 16진수 문자열로 반환
@@ -164,7 +204,22 @@ mod tests {
 
 ## src/block.rs: Block 구조체
 
-```rust
+이 파일이 프로젝트의 중심입니다. `Block`은 하나의 블록을 표현합니다.
+
+블록 필드는 다음 뜻입니다.
+
+| 필드 | 뜻 |
+|------|----|
+| `index` | 체인에서 몇 번째 블록인지 나타내는 높이 |
+| `timestamp` | 블록 생성 시각 |
+| `data` | 이 미니 프로젝트에서 트랜잭션 대신 저장하는 문자열 |
+| `previous_hash` | 바로 앞 블록의 해시 |
+| `hash` | 이 블록 자체의 해시 |
+| `nonce` | Proof of Work 조건을 맞추기 위해 바꾸는 숫자 |
+
+실제 블록체인에서는 `data` 자리에 트랜잭션 목록과 머클 루트가 들어갑니다. 여기서는 처음 배우는 독자가 구조를 볼 수 있도록 문자열 하나로 단순화했습니다.
+
+```rust,ignore
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::fmt;
@@ -340,7 +395,18 @@ mod tests {
 
 ## src/blockchain.rs: Blockchain 구조체
 
-```rust
+`Blockchain`은 `Block` 여러 개를 순서대로 보관하고, 새 블록을 추가하기 전에 연결 규칙을 검증합니다.
+
+이 파일에서 확인할 핵심 규칙은 네 가지입니다.
+
+1. 새 블록의 `index`는 마지막 블록보다 정확히 1 커야 한다.
+2. 새 블록의 `previous_hash`는 마지막 블록의 `hash`와 같아야 한다.
+3. 새 블록의 `hash`는 실제 필드값으로 다시 계산한 해시와 같아야 한다.
+4. 새 블록의 `hash`는 현재 난이도 조건을 만족해야 한다.
+
+이 네 가지가 지켜지면 “체인에 새 블록을 붙여도 된다”고 판단합니다.
+
+```rust,ignore
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use crate::block::Block;
@@ -601,7 +667,7 @@ mod tests {
 
 ## src/main.rs: 진입점과 CLI
 
-```rust
+```rust,ignore
 mod block;
 mod blockchain;
 mod crypto;
@@ -780,7 +846,7 @@ RUST_LOG=debug cargo run -- demo
 
 ## 예상 출력
 
-```
+```text
 ╔═══════════════════════════════════╗
 ║    Mini Blockchain in Rust 🦀      ║
 ╚═══════════════════════════════════╝
@@ -835,14 +901,14 @@ Validating tampered chain...
 
 PoW는 "이 정도의 계산 작업을 했음"을 증명하는 메커니즘입니다:
 
-```
+```text
 목표: 해시가 "00..."으로 시작하는 nonce 찾기
 → 평균적으로 256번 시도 (difficulty=2)
 → 계산 비용이 있어서 악의적인 체인 재작성을 어렵게 함
 → 검증은 한 번의 해시 계산으로 O(1)
 ```
 
-```rust
+```rust,ignore
 // 마이닝: O(2^(4*difficulty)) 평균 시도
 fn mine(&mut self, difficulty: usize) {
     let target = "0".repeat(difficulty);
@@ -862,7 +928,7 @@ fn has_valid_hash(&self) -> bool {
 
 블록 N의 해시는 블록 N-1의 해시를 포함합니다:
 
-```
+```text
 Block 0 (Genesis)
   hash = SHA256("0" + timestamp + "Genesis Block" + "000...0" + "0")
   hash = "4b22..."
@@ -889,7 +955,7 @@ Block 2
 
 ### 1. 트랜잭션 구조체 추가
 
-```rust
+```rust,ignore
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Transaction {
     pub from: String,
@@ -900,14 +966,17 @@ pub struct Transaction {
 }
 
 pub struct Block {
-    // ...
+    pub index: u64,
+    pub previous_hash: String,
+    pub hash: String,
+    pub nonce: u64,
     pub transactions: Vec<Transaction>,  // data 대신
 }
 ```
 
 ### 2. Merkle Tree 루트 해시
 
-```rust
+```rust,ignore
 impl Block {
     pub fn merkle_root(&self) -> String {
         let tx_hashes: Vec<String> = self.transactions.iter()
@@ -920,7 +989,7 @@ impl Block {
 
 ### 3. 비동기 마이닝 (Tokio)
 
-```rust
+```rust,ignore
 use tokio::task;
 
 impl Block {
@@ -940,7 +1009,7 @@ impl Block {
 
 ### 4. P2P 네트워크 (Tokio TCP)
 
-```rust
+```rust,ignore
 async fn handle_peer(
     mut stream: TcpStream,
     state: Arc<RwLock<Blockchain>>,
@@ -963,7 +1032,7 @@ ed25519-dalek = "2.0"
 rand = "0.8"
 ```
 
-```rust
+```rust,ignore
 use ed25519_dalek::{Keypair, Signer, Verifier};
 
 fn create_wallet() -> Keypair {

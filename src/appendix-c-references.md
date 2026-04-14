@@ -279,28 +279,28 @@
 ### 이 교재를 끝낸 독자를 위한 다음 단계
 
 **Rust 백엔드 개발자 (3개월)**
-```
+```text
 월 1: Zero To Production In Rust (웹 서비스 전체 스택)
 월 2: Tokio 심화 + 비동기 패턴 고급
 월 3: platform에 새 기능 추가 (실전)
 ```
 
 **블록체인 개발자 (3개월)**
-```
+```text
 월 1: Cyfrin Updraft 전체 과정 + Foundry 테스트 작성
 월 2: OpenZeppelin 컨트랙트 분석 + DeFi 프로토콜 이해
 월 3: 스마트 컨트랙트 보안 (Secureum)
 ```
 
 **Solana 전문가 (3개월)**
-```
+```text
 월 1: Anchor 튜토리얼 전체 + 기본 Program 구현
 월 2: Token Program, Metaplex NFT 이해
 월 3: Firedancer 아키텍처 이해 + 고성능 Program 최적화
 ```
 
 **풀스택 블록체인 엔지니어 (6개월)**
-```
+```text
 모두 포함 + Polkadot Blockchain Academy 지원
 ```
 

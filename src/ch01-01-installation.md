@@ -12,7 +12,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 설치 스크립트가 실행되면 다음 메뉴가 나타납니다:
 
-```
+```text
 Current installation options:
 
    default host triple: x86_64-apple-darwin
@@ -175,7 +175,7 @@ cargo init --lib
 
 생성된 구조:
 
-```
+```text
 my-project/
 ├── Cargo.toml          # 프로젝트 설정 (package.json)
 ├── Cargo.lock          # 잠금 파일 (package-lock.json)
@@ -282,13 +282,24 @@ cd hello-blockchain
 
 ### src/main.rs 살펴보기
 
-```rust
+```rust,ignore
 fn main() {
     println!("Hello, world!");
 }
 ```
 
-TypeScript의 `console.log`에 해당하는 것이 `println!`입니다. 뒤에 `!`가 붙으면 매크로입니다 (함수가 아님). 지금은 그냥 "특별한 함수"라고 생각해도 됩니다.
+처음 보는 Rust 코드이므로 한 줄씩 읽어봅시다.
+
+| 코드 | 뜻 |
+|------|----|
+| `fn` | 함수를 정의한다는 키워드 |
+| `main` | 실행 파일이 시작되는 함수 이름 |
+| `{ ... }` | 함수 본문 |
+| `println!` | 콘솔에 한 줄 출력하는 매크로 |
+| `"Hello, world!"` | 문자열 리터럴 |
+| `;` | 이 문장이 여기서 끝난다는 표시 |
+
+TypeScript의 `console.log`에 해당하는 것이 `println!`입니다. 뒤에 `!`가 붙으면 매크로입니다. 매크로는 컴파일 시점에 코드를 만들어내는 Rust 기능인데, 지금은 그냥 "특별한 함수처럼 호출하는 출력 도구"라고 생각해도 됩니다.
 
 ### 실행
 
@@ -297,7 +308,7 @@ cargo run
 ```
 
 출력:
-```
+```text
    Compiling hello-blockchain v0.1.0 (/Users/you/hello-blockchain)
     Finished dev [unoptimized + debuginfo] target(s) in 0.50s
      Running `target/debug/hello-blockchain`
@@ -308,7 +319,7 @@ Hello, world!
 
 `src/main.rs`를 수정합니다:
 
-```rust
+```rust,ignore
 fn main() {
     let name = "Blockchain Developer";
     let year = 2024;
@@ -323,12 +334,22 @@ fn main() {
 }
 ```
 
+여기서 새로 나온 문법은 세 가지입니다.
+
+| 문법 | 의미 | TypeScript 감각 |
+|------|------|-----------------|
+| `let name = ...` | 불변 변수 선언 | `const name = ...` |
+| `let block_height: u64 = 100` | 타입을 직접 적은 변수 선언 | `const blockHeight: number = 100` |
+| `{}` | 출력 문자열의 자리표시자 | template literal의 `${value}` |
+
+Rust의 변수는 기본적으로 다시 대입할 수 없습니다. 값을 바꾸려면 뒤에서 볼 `let mut`를 사용해야 합니다. 숫자 타입 `u64`는 부호 없는 64비트 정수입니다. 블록 높이처럼 음수가 될 수 없는 큰 정수에 자주 씁니다.
+
 ```bash
 cargo run
 ```
 
 출력:
-```
+```text
 Hello, Blockchain Developer!
 Welcome to Rust in 2024!
 Block #100: reward = 6.25 BTC
@@ -336,7 +357,7 @@ Block #100: reward = 6.25 BTC
 
 ### println! 포맷 문자열
 
-```rust
+```rust,ignore
 fn main() {
     let x = 42;
     let pi = 3.14159;
@@ -371,7 +392,7 @@ fn main() {
 
 ### eprintln!: stderr 출력
 
-```rust
+```rust,ignore
 fn main() {
     println!("이건 stdout으로");   // 정상 출력
     eprintln!("이건 stderr로");    // 에러/로그 출력
@@ -386,7 +407,7 @@ Node.js의 `console.log`와 `console.error`에 해당합니다.
 
 실제 프로젝트에서 자주 보게 될 구조:
 
-```
+```text
 my-project/
 ├── Cargo.toml              # 프로젝트 메타데이터, 의존성
 ├── Cargo.lock              # 버전 잠금 (커밋에 포함시킬 것)

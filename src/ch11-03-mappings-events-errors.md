@@ -185,7 +185,9 @@ contract EventExample {
     
     // 이벤트 발행 (emit)
     function transfer(address to, uint256 amount) public {
-        // ... 로직 ...
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
         emit Transfer(msg.sender, to, amount);  // emit 키워드로 발행
     }
 }
@@ -316,7 +318,8 @@ function withdraw(uint256 amount) public {
     if (balances[msg.sender] < amount) {
         revert("Insufficient balance");
     }
-    // ...
+    balances[msg.sender] -= amount;
+    payable(msg.sender).transfer(amount);
 }
 ```
 
@@ -385,7 +388,7 @@ contract CustomErrors {
     
     function adminAction() public {
         if (msg.sender != owner) revert Unauthorized(msg.sender, owner);
-        // ...
+        paused = !paused;
     }
 }
 ```

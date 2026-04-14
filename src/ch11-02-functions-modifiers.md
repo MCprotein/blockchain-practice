@@ -306,7 +306,7 @@ contract Proxy {
 
 **receive vs fallback 호출 흐름:**
 
-```
+```text
 ETH 전송 또는 함수 호출
          |
     calldata 있음?

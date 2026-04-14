@@ -29,8 +29,13 @@ try {
 } catch (error) {
     // error는 any/unknown 타입
     // 어떤 에러인지 타입 체크해야 함
-    if (error instanceof NetworkError) { /* ... */ }
-    else if (error instanceof ParseError) { /* ... */ }
+    if (error instanceof NetworkError) {
+        logger.warn({ height: 100, error }, "network failed");
+    } else if (error instanceof ParseError) {
+        logger.error({ height: 100, error }, "invalid block payload");
+    } else {
+        throw error;
+    }
 }
 ```
 
@@ -41,10 +46,16 @@ try {
 
 ### Rust의 해결책: 에러는 값이다
 
-```rust
+```rust,ignore
 // 반환 타입에 에러 가능성이 명시됨
 fn fetch_block(height: u64) -> Result<Block, NetworkError> {
-    // ...
+    if height == 0 {
+        return Err(NetworkError::InvalidHeight);
+    }
+    Ok(Block {
+        height,
+        hash: String::from("0xabc123"),
+    })
 }
 
 // 호출하는 쪽에서 에러를 반드시 처리해야 함
@@ -68,7 +79,7 @@ match block {
 
 프로그래밍 버그, 불변식 위반 등 계속 실행이 의미 없는 상황:
 
-```rust
+```rust,ignore
 fn get_block(index: usize) -> &Block {
     // 인덱스가 범위를 벗어나면 panic (버그)
     &blocks[index]  // 범위 초과 시 panic!
@@ -79,7 +90,7 @@ fn get_block(index: usize) -> &Block {
 
 파일 없음, 네트워크 에러, 파싱 실패 등 정상적인 에러 상황:
 
-```rust
+```rust,ignore
 fn parse_block(json: &str) -> Result<Block, ParseError> {
     // 파싱 실패는 예상된 상황 — Result로 처리
     serde_json::from_str(json).map_err(|e| ParseError::Json(e))
@@ -111,7 +122,7 @@ async getBlock(@Param('height') height: string): Promise<BlockDto> {
 // HttpException을 던지면 NestJS가 자동으로 적절한 HTTP 응답으로 변환
 ```
 
-```rust
+```rust,ignore
 // Rust 에러 처리 (axum 사용)
 async fn get_block(Path(height): Path<u64>) -> Result<Json<Block>, AppError> {
     let block = block_service::find_by_height(height).await

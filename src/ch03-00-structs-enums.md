@@ -29,7 +29,7 @@ class Block {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust: struct로 데이터, impl 블록으로 메서드
 struct Block {
     index: u64,
@@ -54,6 +54,20 @@ impl Block {
 }
 ```
 
+이 코드를 처음 읽을 때는 문법보다 역할을 먼저 보세요.
+
+| Rust 코드 | 역할 |
+|-----------|------|
+| `struct Block { ... }` | `Block`이라는 데이터 모양을 정의 |
+| `index: u64` | 필드 이름은 `index`, 타입은 `u64` |
+| `impl Block { ... }` | `Block`에 붙는 함수와 메서드를 정의 |
+| `fn new(...) -> Block` | 새 `Block`을 만들어 반환하는 생성 함수 |
+| `fn calculate_hash(&self) -> String` | 이미 만들어진 `Block`을 읽어 해시 문자열을 반환하는 메서드 |
+| `&self` | 이 메서드가 `Block`을 소유하지 않고 읽기만 빌린다는 뜻 |
+| `Block { index, timestamp, data, previous_hash, hash }` | 필드 값을 채워 새 구조체 인스턴스를 만드는 문법 |
+
+TypeScript `class`는 데이터와 메서드가 한 덩어리지만, Rust는 데이터(`struct`)와 동작(`impl`)을 분리해서 읽습니다. 앞으로 블록체인 예제의 대부분은 `Transaction`, `Block`, `Blockchain` 같은 구조체를 먼저 정의하고, 그 아래 `impl`에서 생성, 해싱, 검증 동작을 붙이는 패턴으로 작성됩니다.
+
 **핵심 차이점:**
 - Rust의 `struct`는 데이터만 정의 (상속 없음)
 - 메서드는 `impl` 블록에 별도로 정의
@@ -71,7 +85,7 @@ impl Block {
 
 예를 들어 Solana의 온체인 프로그램에서:
 
-```rust
+```rust,ignore
 // Solana 프로그램의 계정 상태 (실제 패턴)
 #[account]
 pub struct TokenAccount {

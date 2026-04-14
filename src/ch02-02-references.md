@@ -4,7 +4,7 @@
 
 앞 챕터에서 소유권을 함수에 전달하면 원래 변수를 사용할 수 없게 된다는 걸 봤습니다:
 
-```rust
+```rust,ignore
 fn calculate_length(s: String) -> usize {
     s.len()
 }
@@ -23,7 +23,7 @@ fn main() {
 
 ## 불변 참조 `&T`
 
-```rust
+```rust,ignore
 fn calculate_length(s: &String) -> usize {  // &String: String의 참조를 받음
     s.len()
 }
@@ -39,7 +39,7 @@ fn main() {
 
 ### 메모리 구조
 
-```
+```text
  스택               힙
 ┌─────────┐        ┌─────────────┐
 │   s     │        │             │
@@ -59,7 +59,7 @@ fn main() {
 
 ### 참조는 불변이 기본
 
-```rust
+```rust,ignore
 fn try_to_change(s: &String) {
     s.push_str(", world");  // 컴파일 에러!
     // error[E0596]: cannot borrow `*s` as mutable, as it is behind a `&` reference
@@ -72,7 +72,7 @@ fn try_to_change(s: &String) {
 
 ## 가변 참조 `&mut T`
 
-```rust
+```rust,ignore
 fn change(s: &mut String) {
     s.push_str(", world");  // OK! 가변 참조로 변경 가능
 }
@@ -115,7 +115,7 @@ Rust의 빌림 규칙은 참조가 항상 유효함을 보장합니다:
 
 ### 규칙 1: 가변 참조는 한 번에 하나만
 
-```rust
+```rust,ignore
 fn main() {
     let mut s = String::from("hello");
 
@@ -133,7 +133,7 @@ fn main() {
 
 Node.js는 싱글 스레드여서 이 문제를 신경 쓸 필요가 없었습니다. Rust는 멀티스레드 환경을 기본으로 고려합니다.
 
-```rust
+```rust,ignore
 // 해결법 1: 스코프 분리
 fn main() {
     let mut s = String::from("hello");
@@ -161,7 +161,7 @@ fn main() {
 
 ### 규칙 2: 불변 참조와 가변 참조의 공존 불가
 
-```rust
+```rust,ignore
 fn main() {
     let mut s = String::from("hello");
 
@@ -176,7 +176,7 @@ fn main() {
 
 **왜?** 불변 참조를 사용하는 코드는 값이 변경되지 않을 거라고 기대합니다. 가변 참조가 동시에 존재하면 이 기대가 깨집니다.
 
-```rust
+```rust,ignore
 // NLL 덕분에 이건 OK
 fn main() {
     let mut s = String::from("hello");
@@ -206,7 +206,7 @@ fn main() {
 
 Rust의 컴파일러는 댕글링 참조(dangling reference)를 방지합니다:
 
-```rust
+```rust,ignore
 fn dangle() -> &String {  // 컴파일 에러!
     let s = String::from("hello");
     &s  // s의 참조를 반환하려고 시도
@@ -219,7 +219,7 @@ fn dangle() -> &String {  // 컴파일 에러!
 
 **해결책**: 소유권을 반환
 
-```rust
+```rust,ignore
 fn no_dangle() -> String {
     let s = String::from("hello");
     s   // 소유권을 반환 — 메모리가 해제되지 않음
@@ -232,7 +232,7 @@ fn no_dangle() -> String {
 
 ### 패턴 1: 읽기만 할 때 `&T`
 
-```rust
+```rust,ignore
 struct Block {
     index: u64,
     hash: String,
@@ -274,7 +274,7 @@ fn main() {
 
 ### 패턴 2: 수정이 필요할 때 `&mut T`
 
-```rust
+```rust,ignore
 struct Blockchain {
     blocks: Vec<Block>,
 }
@@ -313,7 +313,7 @@ fn main() {
 
 ### 패턴 3: 여러 필드를 동시에 가변 참조
 
-```rust
+```rust,ignore
 struct Point {
     x: f64,
     y: f64,
@@ -337,7 +337,7 @@ fn main() {
 
 참조를 통해 실제 값에 접근하려면 `*`(역참조)를 씁니다:
 
-```rust
+```rust,ignore
 fn main() {
     let x = 5;
     let r = &x;       // r은 x의 참조
@@ -354,7 +354,7 @@ fn main() {
 
 대부분의 경우 Rust가 자동으로 역참조합니다(deref coercion). `.` 연산자는 자동으로 역참조합니다:
 
-```rust
+```rust,ignore
 fn main() {
     let s = String::from("hello");
     let r = &s;
@@ -369,7 +369,7 @@ fn main() {
 
 ## 함수에서 참조 반환 시 주의사항
 
-```rust
+```rust,ignore
 // OK: 입력 참조의 수명을 그대로 반환
 fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();
@@ -409,7 +409,7 @@ ref1.data = "modified";
 console.log(ref2.data);  // "modified" — 같은 객체!
 ```
 
-```rust
+```rust,ignore
 // Rust: 불변 참조는 여러 개, 가변 참조는 하나만
 let mut block = Block { data: String::from("genesis") };
 

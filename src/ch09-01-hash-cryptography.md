@@ -10,7 +10,7 @@
 
 해시 함수는 **임의 길이의 입력**을 받아 **고정 길이의 출력**(다이제스트, digest)을 만드는 함수다.
 
-```
+```text
 입력 (임의 길이)        출력 (고정 길이)
 "hello"          ──▶   2cf24dba5fb0a3...  (256비트)
 "hello world"    ──▶   b94d27b9934d3e...  (256비트)
@@ -33,20 +33,20 @@ console.log(hash);
 
 **1. 결정론적 (Deterministic)**
 같은 입력은 항상 같은 출력을 낸다.
-```
+```text
 SHA256("hello") = 2cf24dba... (언제나 동일)
 ```
 
 **2. 단방향성 (One-way / Preimage Resistance)**
 출력에서 입력을 역산하는 것이 계산상 불가능하다.
-```
+```text
 2cf24dba... ──▶ "hello"   ← 이것이 불가능해야 함
 ```
 모든 가능한 입력을 시도(무차별 대입)하는 것 외에 방법이 없다.
 
 **3. 눈사태 효과 (Avalanche Effect)**
 입력이 아주 조금 바뀌어도 출력이 완전히 달라진다.
-```
+```text
 SHA256("hello")  = 2cf24dba5fb0a30e26e83b2ac5b9e29e...
 SHA256("hellO")  = 185f8db32921bd46d35cc3c8c85b...
 ```
@@ -54,7 +54,7 @@ SHA256("hellO")  = 185f8db32921bd46d35cc3c8c85b...
 
 **4. 충돌 저항성 (Collision Resistance)**
 서로 다른 두 입력이 같은 출력을 내는 경우(충돌)를 찾는 것이 계산상 불가능하다.
-```
+```text
 find x, y such that SHA256(x) == SHA256(y)  ← 사실상 불가능
 ```
 
@@ -65,7 +65,7 @@ find x, y such that SHA256(x) == SHA256(y)  ← 사실상 불가능
 
 SHA-256은 다음과 같은 과정을 거친다:
 
-```
+```text
 입력 메시지
     │
     ▼
@@ -99,7 +99,16 @@ sha2 = "0.10"
 hex = "0.4"
 ```
 
-```rust
+코드를 보기 전에 두 크레이트의 역할을 분리해보자.
+
+| 크레이트 | 하는 일 | Node.js 비유 |
+|----------|---------|--------------|
+| `sha2` | SHA-256 해시 계산 | `crypto.createHash("sha256")` |
+| `hex` | 바이트 배열을 16진수 문자열로 변환 | `Buffer.toString("hex")` |
+
+아래 Rust 코드는 “문자열 입력 → 바이트로 변환 → SHA-256 계산 → 16진수 문자열로 출력” 순서로 읽으면 된다.
+
+```rust,ignore
 use sha2::{Sha256, Digest};
 
 fn hash_data(input: &str) -> String {
@@ -125,8 +134,21 @@ fn main() {
 }
 ```
 
+한 줄씩 해석하면 다음과 같다.
+
+| 코드 | 의미 |
+|------|------|
+| `use sha2::{Sha256, Digest};` | `sha2` 크레이트에서 사용할 타입과 트레이트를 가져온다 |
+| `fn hash_data(input: &str) -> String` | 문자열을 빌려 받아(`&str`) 새 `String` 해시를 반환한다 |
+| `let mut hasher = Sha256::new();` | 해시 계산기를 만든다. `update`로 내부 상태를 바꿔야 하므로 `mut`가 필요하다 |
+| `input.as_bytes()` | 문자열을 바이트 배열처럼 읽는다 |
+| `hasher.finalize()` | 해시 계산을 끝내고 32바이트 결과를 얻는다 |
+| `hex::encode(result)` | 사람이 읽을 수 있는 16진수 문자열로 바꾼다 |
+
+`Digest`는 `Sha256::new`, `update`, `finalize` 같은 메서드를 사용할 수 있게 해주는 트레이트다. TypeScript에서는 import한 객체에 메서드가 바로 있는 것처럼 보이지만, Rust에서는 트레이트가 스코프에 있어야 메서드 호출이 가능한 경우가 있다. 트레이트는 5장에서 자세히 다룬다.
+
 **실행 결과:**
-```
+```text
 SHA256("hello") = 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
 SHA256("hello world") = b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576fbe1ea5cc1f7f26b
 SHA256("blockchain") = ef7797e13d3a75526946a3bcf00daec9fc9d1baea5a3d79434669b9eb6b4b250
@@ -150,7 +172,7 @@ SHA256("hellO") = 185f8db32921bd46d35cc3c8c85b0068eb62859e80a82f2e1e13d3e5a19f7b
 
 ### 3.2 머클 트리 구조
 
-```
+```text
                     ┌──────────────┐
                     │  루트 해시   │  ← 머클 루트 (블록 헤더에 저장)
                     │  H(H12+H34) │
@@ -181,7 +203,7 @@ TX3가 블록에 포함되어 있다는 것을 증명하려면:
 
 이 4개의 값만으로 TX3의 포함 여부를 검증할 수 있다. 수천 개의 트랜잭션 전체를 다운로드할 필요가 없다!
 
-```
+```text
 검증 과정:
 1. H3 = Hash(TX3) 계산
 2. H34 = Hash(H3 + H4) 계산
@@ -191,7 +213,7 @@ TX3가 블록에 포함되어 있다는 것을 증명하려면:
 
 ### 3.4 Rust로 머클 트리 구현
 
-```rust
+```rust,ignore
 use sha2::{Sha256, Digest};
 
 /// 두 해시를 합쳐서 새 해시 생성
@@ -348,7 +370,7 @@ fn main() {
 
 Node.js에서 JWT를 써봤다면 이미 비대칭 암호화를 경험한 것이다. 블록체인에서는 이 개념이 훨씬 중요하다.
 
-```
+```text
 비대칭 키 쌍:
 ┌──────────────┐        ┌──────────────┐
 │   비밀키     │        │   공개키     │
@@ -369,7 +391,7 @@ Node.js에서 JWT를 써봤다면 이미 비대칭 암호화를 경험한 것이
 
 이더리움과 비트코인은 **secp256k1** 타원 곡선을 사용한다.
 
-```
+```text
 타원 곡선: y² = x³ + 7 (mod p)
 
     y
@@ -388,7 +410,7 @@ Node.js에서 JWT를 써봤다면 이미 비대칭 암호화를 경험한 것이
 
 ### 4.3 이더리움 지갑 주소 생성 과정
 
-```
+```text
 1. 비밀키 생성 (256비트 난수)
    예: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
@@ -414,7 +436,7 @@ Node.js에서 JWT를 써봤다면 이미 비대칭 암호화를 경험한 것이
 
 ### 4.4 디지털 서명: 서명과 검증
 
-```
+```text
 서명 과정 (송신자):
 ┌─────────────────────────────────────────┐
 │  메시지: "Alice → Bob: 1 ETH"            │
@@ -446,7 +468,7 @@ rand = "0.8"
 hex = "0.4"
 ```
 
-```rust
+```rust,ignore
 use secp256k1::{Secp256k1, Message, SecretKey, PublicKey};
 use sha3::{Keccak256, Digest};
 use rand::rngs::OsRng;
@@ -519,7 +541,7 @@ fn main() {
 
 이더리움에서 트랜잭션이 서명되는 전체 흐름:
 
-```
+```text
 사용자 행동: "1 ETH를 Bob에게 보낸다"
      │
      ▼

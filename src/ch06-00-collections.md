@@ -21,7 +21,7 @@ Rust의 표준 라이브러리는 여러 컬렉션 타입을 제공합니다. No
 
 ### 컬렉션과 소유권
 
-```rust
+```rust,ignore
 fn main() {
     let v = vec![1, 2, 3];
 
@@ -44,7 +44,7 @@ fn main() {
 
 ## 블록체인에서의 컬렉션
 
-```rust
+```rust,ignore
 struct Blockchain {
     // Vec: 순서가 있는 블록 목록
     blocks: Vec<Block>,

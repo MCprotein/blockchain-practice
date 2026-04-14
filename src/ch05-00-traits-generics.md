@@ -21,7 +21,7 @@ first([1, 2, 3]);       // number
 first(["a", "b"]);      // string
 ```
 
-```rust
+```rust,ignore
 // Rust 제네릭
 fn first<T>(slice: &[T]) -> Option<&T> {
     slice.first()
@@ -40,22 +40,28 @@ interface Hashable {
 }
 
 class Block implements Hashable {
-    computeHash(): string { return "..."; }
+    constructor(private readonly index: number, private readonly data: string) {}
+
+    computeHash(): string {
+        return `${this.index}:${this.data}`;
+    }
 }
 ```
 
-```rust
+```rust,ignore
 // Rust trait
 trait Hashable {
     fn compute_hash(&self) -> String;
 }
 
-struct Block { /* ... */ }
+struct Block {
+    index: u64,
+    data: String,
+}
 
 impl Hashable for Block {
     fn compute_hash(&self) -> String {
-        // 구현
-        String::from("...")
+        format!("{}:{}", self.index, self.data)
     }
 }
 ```
@@ -70,7 +76,7 @@ impl Hashable for Block {
 
 ## 블록체인에서의 활용
 
-```rust
+```rust,ignore
 // 제네릭 + 트레이트로 범용적인 블록체인 저장소 구현
 trait BlockStore {
     type Block;

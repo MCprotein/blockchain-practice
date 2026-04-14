@@ -19,7 +19,7 @@ processData(data);
 console.log(data.name); // 문제없음
 ```
 
-```rust
+```rust,ignore
 // Rust - 컴파일 에러
 let data = EventData { name: "apple".to_string(), count: 5 };
 process_data(data);           // data의 소유권이 이동됨
@@ -28,7 +28,7 @@ println!("{}", data.name);    // 에러! data는 이미 이동됨
 
 **해결: 참조(&) 또는 Clone 사용**
 
-```rust
+```rust,ignore
 // 해결 1: 참조 전달 (권장)
 let data = EventData { name: "apple".to_string(), count: 5 };
 process_data(&data);          // 참조만 전달
@@ -40,7 +40,9 @@ process_data(data.clone());   // 복사본 전달
 println!("{}", data.name);    // OK - 원본 소유권 유지됨
 
 // 함수 시그니처도 맞춰야 함
-fn process_data(data: &EventData) { ... }  // 참조 받기
+fn process_data(data: &EventData) {
+    println!("{}: {}", data.name, data.count);
+}  // 참조 받기
 ```
 
 **Arc로 여러 곳에서 공유**
@@ -53,7 +55,7 @@ const handler2 = new CropHandler(service);
 // 모두 같은 service 객체를 참조
 ```
 
-```rust
+```rust,ignore
 // Rust - Arc로 공유 참조
 use std::sync::Arc;
 
@@ -75,13 +77,13 @@ const value = JSON.parse(userInput);  // 실패해도 일단 try-catch로
 const result = await db.query(sql);   // undefined 체크 없이 사용
 ```
 
-```rust
+```rust,ignore
 // Rust - 나쁜 패턴 (절대 금지)
 let value: serde_json::Value = serde_json::from_str(user_input).unwrap();  // panic 가능
 let result = db.fetch_one(query).await.unwrap();  // panic 가능
 ```
 
-```rust
+```rust,ignore
 // Rust - 올바른 패턴
 
 // 방법 1: ? 연산자 (가장 간결)
@@ -110,7 +112,7 @@ if let Some(record) = db.fetch_optional(query).await? {
 ```
 
 **언제 unwrap/expect를 써도 되는가:**
-```rust
+```rust,ignore
 // 테스트 코드에서
 #[test]
 fn test_hash_calculation() {
@@ -136,10 +138,12 @@ Node.js에는 문자열이 하나다. Rust에는 두 가지가 있다.
 // TypeScript
 const name: string = "apple";
 const greeting: string = `Hello, ${name}`;
-function greet(name: string): string { ... }
+function greet(name: string): string {
+  return `Hello, ${name}`;
+}
 ```
 
-```rust
+```rust,ignore
 // Rust
 let name: &str = "apple";           // 정적 문자열 슬라이스 (불변, 스택)
 let owned: String = "apple".to_string(); // 힙 할당 문자열 (가변, 소유)
@@ -156,11 +160,13 @@ greet(&owned);                       // String → &str 자동 변환 (Deref)
 ```
 
 **언제 무엇을 쓸까:**
-```rust
+```rust,ignore
 // &str을 써야 하는 경우:
 // - 함수 파라미터 (호출자가 String이든 &str이든 모두 받을 수 있음)
 // - 문자열을 수정하지 않을 때
-fn process(name: &str) { ... }
+fn process(name: &str) {
+    println!("processing {name}");
+}
 
 // String을 써야 하는 경우:
 // - 구조체 필드 (소유권 필요)
@@ -187,13 +193,13 @@ const price = 0.1 + 0.2;  // 0.30000000000000004
 const total = 1.5 * 100;   // 실제로는 149.99999... 일 수 있음
 ```
 
-```rust
+```rust,ignore
 // Rust - 잘못된 예시
 let price: f64 = 0.1 + 0.2;  // 0.30000000000000004
 let token_amount: f64 = 1_500_000.0 * 0.001;  // 부동소수점 오차
 ```
 
-```rust
+```rust,ignore
 // Rust - 올바른 방법: 정수 사용 (최소 단위)
 
 // ETH는 wei 단위 (10^18)
@@ -235,7 +241,7 @@ async function processEvent(mutex: Mutex, event: Event) {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust - 컴파일 에러 또는 데드락!
 async fn process_event(mutex: Arc<Mutex<State>>, event: Event) -> Result<()> {
     let guard = mutex.lock().unwrap();  // 락 획득
@@ -245,7 +251,7 @@ async fn process_event(mutex: Arc<Mutex<State>>, event: Event) -> Result<()> {
 }
 ```
 
-```rust
+```rust,ignore
 // 올바른 패턴 1: 락 범위를 .await 밖으로
 
 async fn process_event(mutex: Arc<Mutex<State>>, event: Event) -> Result<()> {
@@ -300,7 +306,7 @@ async function fetchUser(id: string): Promise<User> {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust
 async fn fetch_user(db: &PgPool, id: &str) -> Result<User, AppError> {
     let user = sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1", id)
@@ -462,7 +468,7 @@ path = "src/bin/migrate.rs"
 export class EventModule {}
 ```
 
-```rust
+```rust,ignore
 // Axum - 별도 모듈 시스템 없음, 수동으로 구성
 // src/services/event.rs
 pub struct EventService {
@@ -499,7 +505,7 @@ export class EventController {
 }
 ```
 
-```rust
+```rust,ignore
 // Axum
 pub fn event_routes() -> Router<AppState> {
     Router::new()
@@ -547,7 +553,7 @@ export class CreateEventDto {
 }
 ```
 
-```rust
+```rust,ignore
 // Axum - serde + validator 크레이트
 use serde::Deserialize;
 use validator::Validate;
@@ -563,10 +569,11 @@ pub struct CreateEventRequest {
 // 핸들러에서 수동 검증
 async fn create_event(
     Json(body): Json<CreateEventRequest>,
-) -> Result<..., AppError> {
+) -> Result<Json<TraceEventResponse>, AppError> {
     body.validate()
         .map_err(|e| AppError::BadRequest(e.to_string()))?;
-    // ...
+    let response = TraceEventResponse::from_request(body);
+    Ok(Json(response))
 }
 
 // 또는 커스텀 Extractor로 자동 검증
@@ -611,7 +618,7 @@ export class AppConfigService {
 }
 ```
 
-```rust
+```rust,ignore
 // Axum - dotenvy + std::env
 use dotenvy::dotenv;
 
@@ -657,12 +664,13 @@ export class LoggingInterceptor implements NestInterceptor {
 }
 ```
 
-```rust
+```rust,ignore
 // Axum - Tower Layer (tower-http 사용)
 use tower_http::trace::TraceLayer;
 
 let app = Router::new()
-    // ...
+    .route("/health", get(health_check))
+    .route("/events", post(create_event))
     .layer(TraceLayer::new_for_http()); // 자동으로 요청/응답 로깅
 
 // 커스텀 레이어가 필요하면
@@ -681,7 +689,7 @@ impl<S> Layer<S> for TimingLayer {
 
 ## 실수별 빠른 참조 카드
 
-```
+```text
 에러: "use of moved value"
 해결: & 참조 사용 또는 .clone()
 

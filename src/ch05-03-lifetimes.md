@@ -6,7 +6,7 @@
 
 ### 문제: 댕글링 참조
 
-```rust
+```rust,ignore
 fn main() {
     let r;
     {
@@ -18,7 +18,7 @@ fn main() {
 ```
 
 컴파일러 에러:
-```
+```text
 error[E0597]: `x` does not live long enough
  --> src/main.rs:5:13
   |
@@ -38,7 +38,7 @@ error[E0597]: `x` does not live long enough
 
 두 참조를 받아 하나를 반환하는 함수에서 수명이 필요합니다:
 
-```rust
+```rust,ignore
 // 컴파일 에러 — 반환하는 참조의 수명을 알 수 없음
 fn longest(x: &str, y: &str) -> &str {
     if x.len() > y.len() { x } else { y }
@@ -50,7 +50,7 @@ fn longest(x: &str, y: &str) -> &str {
 
 컴파일러는 반환되는 `&str`이 `x`의 수명인지 `y`의 수명인지 알 수 없습니다. 수명 어노테이션으로 알려줍니다:
 
-```rust
+```rust,ignore
 // 수명 어노테이션 추가
 fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() { x } else { y }
@@ -62,7 +62,7 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 
 실제로는 "x와 y 중 더 짧은 수명"을 의미합니다.
 
-```rust
+```rust,ignore
 fn main() {
     let string1 = String::from("long string");
     let result;
@@ -80,7 +80,7 @@ fn main() {
 
 ## 수명 어노테이션 문법
 
-```rust
+```rust,ignore
 // 참조 타입에 수명 어노테이션
 &i32         // 수명 없는 참조 (컴파일러가 추론)
 &'a i32      // 수명 'a를 가진 참조
@@ -102,7 +102,7 @@ let s: &'static str = "I live forever";  // 문자열 리터럴
 
 구조체가 참조를 필드로 가질 때 수명 어노테이션이 필요합니다:
 
-```rust
+```rust,ignore
 // 구조체가 참조를 소유하지 않고 빌림
 struct BlockRef<'a> {
     // &str이 아닌 &'a str — 원본 데이터의 수명에 묶임
@@ -134,7 +134,7 @@ fn main() {
 
 **실용적인 조언**: 구조체 필드로 참조 대신 `String`, `Vec<T>` 등 소유된 타입을 사용하면 수명 어노테이션이 필요 없습니다. 성능이 매우 중요한 경우가 아니면 소유된 타입을 선호합니다:
 
-```rust
+```rust,ignore
 // 수명 어노테이션 없음 — 소유된 데이터
 struct Block {
     hash: String,   // String 소유 (힙에 할당)
@@ -150,7 +150,7 @@ struct Block {
 
 **규칙 1**: 각 참조 매개변수는 고유한 수명을 가짐
 
-```rust
+```rust,ignore
 fn foo(x: &str) -> &str { x }
 // 컴파일러가 이렇게 처리:
 fn foo<'a>(x: &'a str) -> &'a str { x }
@@ -158,7 +158,7 @@ fn foo<'a>(x: &'a str) -> &'a str { x }
 
 **규칙 2**: 하나의 참조 입력만 있으면, 반환 참조는 그 수명을 가짐
 
-```rust
+```rust,ignore
 fn first_word(s: &str) -> &str {
     // 수명 명시 불필요
     let bytes = s.as_bytes();
@@ -170,12 +170,19 @@ fn first_word(s: &str) -> &str {
     s
 }
 // 컴파일러가 이렇게 처리:
-fn first_word<'a>(s: &'a str) -> &'a str { /* ... */ }
+fn first_word<'a>(s: &'a str) -> &'a str {
+    for (i, byte) in s.as_bytes().iter().enumerate() {
+        if *byte == b' ' {
+            return &s[..i];
+        }
+    }
+    s
+}
 ```
 
 **규칙 3**: 메서드에서 `&self` 또는 `&mut self`가 있으면, 반환 참조는 self의 수명
 
-```rust
+```rust,ignore
 impl Block {
     fn get_data(&self) -> &str {
         // 수명 명시 불필요 — self의 수명으로 자동 처리
@@ -192,7 +199,7 @@ impl Block {
 
 ### 상황 1: 두 참조 중 하나를 반환
 
-```rust
+```rust,ignore
 // 수명 어노테이션 필요
 fn longest_prefix<'a>(s: &'a str, prefix: &'a str) -> &'a str {
     if s.starts_with(prefix) { prefix } else { s }
@@ -201,7 +208,7 @@ fn longest_prefix<'a>(s: &'a str, prefix: &'a str) -> &'a str {
 
 ### 상황 2: 구조체가 참조를 포함할 때
 
-```rust
+```rust,ignore
 struct Parser<'a> {
     input: &'a str,
     position: usize,
@@ -231,7 +238,7 @@ fn main() {
 
 ### 상황 3: 입력과 출력 수명이 다를 때
 
-```rust
+```rust,ignore
 fn get_prefix<'a, 'b>(s: &'a str, _separator: &'b str) -> &'a str {
     // _separator의 수명은 반환값과 무관
     // 반환값의 수명은 s에만 묶임
@@ -245,7 +252,7 @@ fn get_prefix<'a, 'b>(s: &'a str, _separator: &'b str) -> &'a str {
 
 `'static`은 프로그램 전체 기간 동안 유효한 수명입니다:
 
-```rust
+```rust,ignore
 // 문자열 리터럴은 'static
 let s: &'static str = "Hello, World!";
 
@@ -273,7 +280,7 @@ fn may_fail() -> Result<(), Box<dyn std::error::Error + 'static>> {
 
 **가장 실용적인 해결책**: 소유된 데이터를 사용하세요.
 
-```rust
+```rust,ignore
 // 수명 문제를 만날 때의 선택지:
 
 // 1. 소유된 타입 사용 (가장 간단)
@@ -302,17 +309,17 @@ Node.js에서는 객체를 참조로 자유롭게 공유합니다. Rust에서는
 
 ## 수명 관련 자주 보는 에러와 해결법
 
-```
+```text
 error[E0106]: missing lifetime specifier
 ```
 → 함수가 참조를 반환하는데 수명이 불명확. 입력 참조 중 어느 것에서 나오는지 명시하거나, 소유된 타입(`String`) 반환 고려.
 
-```
+```text
 error[E0597]: `x` does not live long enough
 ```
 → 참조가 원본 데이터보다 오래 살려고 함. 데이터의 스코프를 늘리거나, 소유권을 이동(clone).
 
-```
+```text
 error[E0502]: cannot borrow `x` as mutable because it is also borrowed as immutable
 ```
 → 불변 참조가 살아있는 동안 가변 참조 생성 시도. 불변 참조를 먼저 끝내고 가변 참조 사용.

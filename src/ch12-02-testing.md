@@ -96,7 +96,7 @@ contract CounterTest is Test {
 
 ### 테스트 파일 명명 규칙
 
-```
+```text
 test/
 ├── Counter.t.sol          # 단위 테스트 (.t.sol 확장자)
 ├── Vault.t.sol
@@ -406,7 +406,7 @@ function testFuzz_PartialWithdraw(uint256 depositAmount, uint256 withdrawAmount)
 forge test
 ```
 
-```
+```text
 Running 5 tests for test/Token.t.sol:TokenTest
 [PASS] test_InitialSupply() (gas: 12345)
 [PASS] test_Transfer() (gas: 45678)
@@ -435,7 +435,7 @@ forge test -vvvv   # 전체 콜 트레이스
 forge test -vvv
 ```
 
-```
+```text
 [FAIL. Counterexample: calldata=... args=[0]]
     testFuzz_Transfer(uint256)
     
@@ -671,7 +671,7 @@ forge test --match-test test_Transfer -vvv
 ```
 
 커버리지 출력 예시:
-```
+```text
 | File                | % Lines  | % Statements | % Branches | % Funcs  |
 |---------------------|----------|--------------|------------|----------|
 | src/SimpleToken.sol | 100.00%  | 100.00%      | 87.50%     | 100.00%  |

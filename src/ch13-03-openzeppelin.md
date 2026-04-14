@@ -34,7 +34,7 @@ echo "@openzeppelin/=lib/openzeppelin-contracts/" >> remappings.txt
 ```
 
 설치 확인:
-```
+```text
 lib/
 └── openzeppelin-contracts/
     └── contracts/
@@ -268,7 +268,9 @@ contract RoleBasedToken is ERC20, AccessControl {
 @Roles('admin', 'minter')
 @UseGuards(RolesGuard)
 @Post('/mint')
-async mint(@Body() dto: MintDto) { ... }
+async mint(@Body() dto: MintDto) {
+  return this.tokenService.mint(dto.to, dto.amount);
+}
 ```
 
 ```solidity

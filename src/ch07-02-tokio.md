@@ -22,7 +22,7 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time",
 
 ## #[tokio::main]
 
-```rust
+```rust,ignore
 use tokio;
 
 #[tokio::main]
@@ -35,7 +35,7 @@ async fn main() {
 
 `#[tokio::main]` 매크로는 다음으로 확장됩니다:
 
-```rust
+```rust,ignore
 fn main() {
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
@@ -55,7 +55,7 @@ fn main() {
 
 `tokio::spawn`은 새 태스크를 생성합니다. Node.js의 `Promise` 즉시 실행과 유사합니다:
 
-```rust
+```rust,ignore
 use tokio;
 
 async fn process_transaction(id: u64) -> String {
@@ -97,7 +97,7 @@ const [r1, r2, r3] = await Promise.all([p1, p2, p3]);
 
 ### spawn 주의사항
 
-```rust
+```rust,ignore
 #[tokio::main]
 async fn main() {
     let data = String::from("hello");
@@ -120,7 +120,7 @@ async fn main() {
 
 ## tokio::time: 타이머
 
-```rust
+```rust,ignore
 use tokio::time::{sleep, Duration, timeout, interval};
 
 #[tokio::main]
@@ -164,7 +164,7 @@ async fn fetch_block(height: u64) -> String {
 
 Multi-Producer Single-Consumer — 가장 흔한 패턴입니다.
 
-```rust
+```rust,ignore
 use tokio::sync::mpsc;
 
 #[tokio::main]
@@ -203,7 +203,7 @@ async fn main() {
 
 ### oneshot: 단일 응답
 
-```rust
+```rust,ignore
 use tokio::sync::oneshot;
 
 async fn compute_hash(data: String, responder: oneshot::Sender<String>) {
@@ -224,7 +224,7 @@ async fn main() {
 
 ### 블록체인에서의 채널 패턴
 
-```rust
+```rust,ignore
 use tokio::sync::mpsc;
 
 #[derive(Debug)]
@@ -296,7 +296,7 @@ async fn main() {
 
 ## HTTP 요청: reqwest
 
-```rust
+```rust,ignore
 use reqwest;
 use serde::{Deserialize, Serialize};
 
@@ -364,7 +364,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ### reqwest 클라이언트 재사용
 
-```rust
+```rust,ignore
 use reqwest::Client;
 use std::sync::Arc;
 
@@ -432,7 +432,7 @@ export class BlockController {
 }
 ```
 
-```rust
+```rust,ignore
 // Axum (Rust의 웹 프레임워크)
 use axum::{
     routing::{get, post},

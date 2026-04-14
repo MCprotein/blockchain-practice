@@ -4,7 +4,7 @@
 
 Anchor는 Solana 프로그램 개발을 위한 프레임워크입니다. Solana 생태계에서 Anchor의 위치를 다른 도구들과 비교하면 이렇습니다:
 
-```
+```text
 이더리움 개발 스택:
   Solidity 언어 + Foundry/Hardhat 프레임워크
 
@@ -23,7 +23,7 @@ Anchor를 "Solana의 NestJS"라고 부르는 이유는, NestJS가 Express.js의 
 
 앞 장에서 Native Rust로 카운터 프로그램을 작성했을 때를 기억하시나요? 다음과 같은 코드를 직접 작성해야 했습니다:
 
-```rust
+```rust,ignore
 // Native Rust: 개발자가 직접 해야 할 것들
 
 // 1. 계정 파싱 (보일러플레이트)
@@ -54,9 +54,9 @@ counter_data.serialize(&mut *counter_account.data.borrow_mut())?;
 
 // 7. Instruction 디스패치 (열거형 매칭)
 match instruction {
-    CounterInstruction::Initialize => { ... }
-    CounterInstruction::Increment { amount } => { ... }
-    // ...
+    CounterInstruction::Initialize => initialize(counter_account),
+    CounterInstruction::Increment { amount } => increment(counter_account, amount),
+    CounterInstruction::Reset => reset(counter_account),
 }
 ```
 
@@ -66,7 +66,7 @@ match instruction {
 
 Anchor는 이를 매크로로 해결합니다:
 
-```rust
+```rust,ignore
 // Anchor: 같은 기능, 훨씬 적은 코드
 
 #[program]
@@ -96,7 +96,7 @@ pub struct Increment<'info> {
 
 ### Native Rust (약 80줄)
 
-```rust
+```rust,ignore
 fn process_initialize(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
@@ -139,7 +139,7 @@ fn process_initialize(
 
 ### Anchor (약 20줄)
 
-```rust
+```rust,ignore
 pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
     let counter = &mut ctx.accounts.counter;
     counter.count = 0;
@@ -167,7 +167,7 @@ pub struct Initialize<'info> {
 
 ## Anchor가 자동으로 처리하는 것들
 
-```
+```text
 Anchor 매크로가 생성하는 코드:
 ┌─────────────────────────────────────────────────────────┐
 │  #[derive(Accounts)] 가 자동 생성하는 것:               │
@@ -315,7 +315,7 @@ await program.methods
 
 ## Anchor 생태계
 
-```
+```text
 Anchor 생태계:
 ┌──────────────────────────────────────────────────────┐
 │  anchor-lang    → Rust 매크로 및 트레이트            │

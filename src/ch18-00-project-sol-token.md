@@ -6,7 +6,7 @@
 
 ### 요구사항
 
-```
+```text
 기능:
 1. initialize    - 포인트 시스템 초기화 (관리자 설정)
 2. register_user - 사용자 등록 (포인트 계정 생성)
@@ -42,7 +42,7 @@ solana --version   # 1.18+
 
 ## 계정 구조 설계
 
-```
+```text
 ┌────────────────────────────────────────────────────────┐
 │             포인트 시스템 계정 구조                     │
 │                                                        │
@@ -70,7 +70,7 @@ solana --version   # 1.18+
 
 ## 프로그램 코드: programs/sol-point-system/src/lib.rs
 
-```rust
+```rust,ignore
 use anchor_lang::prelude::*;
 
 declare_id!("PoiNt1111111111111111111111111111111111111111");
@@ -924,7 +924,10 @@ npx ts-node -e "
 const anchor = require('@coral-xyz/anchor');
 const { PublicKey } = require('@solana/web3.js');
 const connection = new anchor.web3.Connection('https://api.devnet.solana.com');
-// ... 계정 조회
+const programId = new PublicKey(process.env.PROGRAM_ID);
+connection.getAccountInfo(programId).then((account) => {
+  console.log(account ? '프로그램 계정 존재' : '프로그램 계정 없음');
+});
 "
 ```
 
@@ -934,7 +937,7 @@ const connection = new anchor.web3.Connection('https://api.devnet.solana.com');
 
 이 기본 포인트 시스템에 추가할 수 있는 기능들:
 
-```rust
+```rust,ignore
 // 1. 만료 기능: expires_at: i64 필드 추가
 pub fn is_expired(&self, current_time: i64) -> bool {
     self.expires_at > 0 && current_time > self.expires_at
@@ -962,7 +965,7 @@ pub fn get_tier(&self) -> &str {
 
 이 미니프로젝트를 통해 다음을 실습했습니다:
 
-```
+```text
 Solana/Anchor 핵심 개념:
 ✓ declare_id! - 프로그램 ID 관리
 ✓ #[program] - Instruction 라우팅

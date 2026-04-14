@@ -16,7 +16,7 @@ forge init --force .
 
 생성 직후 출력:
 
-```
+```text
 Initializing /path/to/my-project...
 Installing forge-std in /path/to/my-project/lib/forge-std (url: Some("https://github.com/foundry-rs/forge-std"), tag: None)
     Initialized forge project
@@ -24,7 +24,7 @@ Installing forge-std in /path/to/my-project/lib/forge-std (url: Some("https://gi
 
 ## 디렉토리 구조
 
-```
+```text
 my-project/
 ├── foundry.toml          # 프로젝트 설정 파일
 ├── .gitignore
@@ -209,7 +209,7 @@ remappings는 import 경로의 별칭을 정의한다. npm의 `paths` (tsconfig.
 
 ### remappings.txt
 
-```
+```text
 # remappings.txt (루트 디렉토리)
 @openzeppelin/=lib/openzeppelin-contracts/
 @uniswap/v3-core/=lib/v3-core/
@@ -313,7 +313,7 @@ echo "@openzeppelin/=lib/openzeppelin-contracts/" >> remappings.txt
 
 설치 후 디렉토리 구조:
 
-```
+```text
 lib/
 ├── forge-std/                     # 기본 설치됨
 │   └── src/
@@ -351,7 +351,7 @@ forge remove lib/openzeppelin-contracts
 
 git 서브모듈로 관리되므로 `.gitmodules`에 의존성이 기록된다:
 
-```
+```text
 [submodule "lib/forge-std"]
     path = lib/forge-std
     url = https://github.com/foundry-rs/forge-std
@@ -479,7 +479,7 @@ forge test
 
 실무 프로젝트의 완성된 구조:
 
-```
+```text
 my-defi-project/
 ├── foundry.toml
 ├── remappings.txt

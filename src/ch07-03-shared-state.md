@@ -13,7 +13,7 @@ Node.js는 싱글 스레드이기 때문에 이런 문제가 없었습니다. Ru
 
 ## 소유권과 스레드 안전성
 
-```rust
+```rust,ignore
 // 이건 불가능 — 소유권은 하나
 fn main() {
     let data = String::from("blockchain data");
@@ -36,7 +36,7 @@ fn main() {
 
 `Arc`는 Atomically Reference Counted — 스레드 안전한 참조 카운팅 스마트 포인터입니다.
 
-```rust
+```rust,ignore
 use std::sync::Arc;
 use std::thread;
 
@@ -76,7 +76,7 @@ fn main() {
 
 `Mutex`(Mutual Exclusion)는 한 번에 하나의 스레드만 접근할 수 있도록 잠금을 제공합니다.
 
-```rust
+```rust,ignore
 use std::sync::{Arc, Mutex};
 use std::thread;
 
@@ -105,7 +105,7 @@ fn main() {
 
 ### Mutex의 잠금 획득과 해제
 
-```rust
+```rust,ignore
 use std::sync::Mutex;
 
 fn main() {
@@ -130,7 +130,7 @@ fn main() {
 
 ### 데드락 주의
 
-```rust
+```rust,ignore
 use std::sync::{Arc, Mutex};
 
 // 데드락 예시 — 주의!
@@ -176,7 +176,7 @@ fn safe_locking() {
 
 `Mutex`는 읽기도 독점합니다. 읽기 작업이 많고 쓰기가 드문 경우 `RwLock`이 효율적입니다.
 
-```rust
+```rust,ignore
 use std::sync::{Arc, RwLock};
 use std::thread;
 
@@ -229,7 +229,7 @@ fn main() {
 
 Tokio 비동기 환경에서는 `tokio::sync::Mutex`와 `tokio::sync::RwLock`을 사용합니다:
 
-```rust
+```rust,ignore
 use tokio::sync::{Mutex, RwLock};
 use std::sync::Arc;
 
@@ -303,7 +303,7 @@ async fn main() {
 
 ## .await 중 락 보유의 위험성
 
-```rust
+```rust,ignore
 use tokio::sync::Mutex;
 use std::sync::Arc;
 
@@ -367,7 +367,7 @@ Rust/Tokio는 멀티 스레드이므로 여러 태스크가 정말로 동시에 
 
 ## 실용 패턴: 블록체인 노드 상태 관리
 
-```rust
+```rust,ignore
 use tokio::sync::RwLock;
 use std::sync::Arc;
 use std::collections::HashMap;

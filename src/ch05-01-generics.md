@@ -4,7 +4,7 @@
 
 같은 로직인데 타입만 다른 코드를 반복 작성하는 것은 나쁜 설계입니다:
 
-```rust
+```rust,ignore
 // 반복 코드 — 나쁜 패턴
 fn largest_i32(list: &[i32]) -> &i32 {
     let mut largest = &list[0];
@@ -29,7 +29,7 @@ fn largest_f64(list: &[f64]) -> &f64 {
 
 제네릭으로 하나로 합칩니다:
 
-```rust
+```rust,ignore
 // 제네릭 함수 — 좋은 패턴
 fn largest<T: PartialOrd>(list: &[T]) -> &T {
     let mut largest = &list[0];
@@ -56,7 +56,7 @@ fn main() {
 
 ## 함수의 제네릭
 
-```rust
+```rust,ignore
 // 단일 타입 매개변수
 fn identity<T>(value: T) -> T {
     value
@@ -103,7 +103,7 @@ function zipFirst<T, U>(a: T[], b: U[]): [T, U][] {
 
 ## 구조체의 제네릭
 
-```rust
+```rust,ignore
 // 단일 타입 매개변수
 #[derive(Debug)]
 struct Wrapper<T> {
@@ -144,7 +144,7 @@ fn main() {
 
 ### 여러 타입 매개변수를 가진 구조체
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 struct KeyValue<K, V> {
     key: K,
@@ -168,7 +168,7 @@ fn main() {
 
 ### 블록체인에서의 제네릭 구조체
 
-```rust
+```rust,ignore
 /// 제네릭 트랜잭션 — 다양한 페이로드를 담을 수 있음
 #[derive(Debug, Clone)]
 struct Transaction<T> {
@@ -241,7 +241,7 @@ fn current_timestamp() -> u64 {
 
 이미 `Option<T>`와 `Result<T, E>`에서 봤습니다. 직접 만들어봅시다:
 
-```rust
+```rust,ignore
 // 이진 트리 (블록체인 Merkle Tree의 기초)
 #[derive(Debug)]
 enum Tree<T> {
@@ -298,7 +298,7 @@ fn main() {
 
 Rust의 제네릭은 **모노모피제이션(monomorphization)**으로 구현됩니다. 컴파일 시 각 구체 타입에 대한 특화 버전이 생성됩니다.
 
-```rust
+```rust,ignore
 fn identity<T>(x: T) -> T { x }
 
 // 컴파일러가 이 두 호출을 감지하고:
@@ -329,7 +329,7 @@ function identity<T>(x: T): T { return x; }
 
 ## 타입 매개변수 기본값 (Rust 1.0+)
 
-```rust
+```rust,ignore
 // HashMap은 기본 해셔를 가짐
 // pub struct HashMap<K, V, S = RandomState> { ... }
 
@@ -351,7 +351,7 @@ let custom_map: HashMap<String, u64, BuildHasherDefault<DefaultHasher>> =
 
 Rust의 타입 추론이 강력하기 때문에 대부분의 경우 타입을 명시하지 않아도 됩니다:
 
-```rust
+```rust,ignore
 fn main() {
     // 타입 추론으로 명시 불필요
     let v = vec![1, 2, 3];          // Vec<i32>

@@ -4,7 +4,7 @@
 
 Provider는 Ethereum 노드와의 연결을 추상화한 인터페이스다. 블록체인에서 데이터를 읽거나 트랜잭션을 제출할 때 사용한다. Node.js의 `ethers.provider`나 `viem`의 `publicClient`에 해당한다.
 
-```
+```text
 Rust 코드 → Provider → JSON-RPC → Ethereum 노드 (Besu/Geth/etc.)
 ```
 
@@ -18,7 +18,7 @@ Provider는 두 가지 역할을 한다:
 
 가장 기본적인 방법이다. 대부분의 RPC 엔드포인트는 HTTP를 지원한다.
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 
 #[tokio::main]
@@ -45,7 +45,7 @@ HTTP Provider는 단방향 요청/응답이다. 이벤트 구독이 필요하면
 
 실시간 이벤트 구독(블록 생성, 로그 등)에 필요하다.
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::transports::ws::WsConnect;
 
@@ -73,7 +73,7 @@ async fn main() -> eyre::Result<()> {
 
 `ProviderBuilder`는 Provider를 단계적으로 구성하는 빌더 패턴을 제공한다.
 
-```rust
+```rust,ignore
 use alloy::providers::ProviderBuilder;
 use alloy::signers::local::PrivateKeySigner;
 
@@ -98,7 +98,7 @@ let wallet_provider = ProviderBuilder::new()
 
 ### 잔액 조회
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::primitives::Address;
 
@@ -127,7 +127,7 @@ async fn get_balance_example() -> eyre::Result<()> {
 
 ### 블록 정보 조회
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::rpc::types::BlockNumberOrTag;
 
@@ -168,7 +168,7 @@ async fn get_block_example() -> eyre::Result<()> {
 
 ### 트랜잭션 조회
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::primitives::B256;
 
@@ -213,7 +213,7 @@ async fn get_transaction_example() -> eyre::Result<()> {
 
 `view` 함수는 블록체인 상태를 변경하지 않는 읽기 전용 함수다. 가스가 들지 않고, 트랜잭션이 아닌 `eth_call` RPC로 처리된다.
 
-```rust
+```rust,ignore
 use alloy::sol;
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::primitives::Address;
@@ -265,7 +265,7 @@ async fn read_contract_example() -> eyre::Result<()> {
 
 실제 프로젝트에서 사용할 수 있는 완전한 예제다:
 
-```rust
+```rust,ignore
 use alloy::{
     primitives::{address, Address, U256},
     providers::{Provider, ProviderBuilder},
@@ -371,7 +371,7 @@ const balance = await provider.getBalance("0x742d35...");
 console.log(ethers.formatEther(balance)); // "1.5"
 ```
 
-```rust
+```rust,ignore
 // Alloy (Rust)
 use alloy::providers::{Provider, ProviderBuilder};
 use alloy::primitives::Address;
@@ -390,7 +390,7 @@ const block = await provider.getBlock("latest");
 console.log(block.number, block.hash, block.timestamp);
 ```
 
-```rust
+```rust,ignore
 // Alloy
 use alloy::rpc::types::BlockNumberOrTag;
 
@@ -410,7 +410,7 @@ const contract = new ethers.Contract(tokenAddress, abi, provider);
 const balance = await contract.balanceOf(userAddress);
 ```
 
-```rust
+```rust,ignore
 // Alloy - sol! 매크로로 타입 안전한 호출
 sol! {
     interface IERC20 {
@@ -436,7 +436,7 @@ let balance = result._0; // U256 타입
 
 ## 실습: 체인 상태 모니터링
 
-```rust
+```rust,ignore
 use alloy::providers::{Provider, ProviderBuilder};
 use std::time::Duration;
 use tokio::time::sleep;

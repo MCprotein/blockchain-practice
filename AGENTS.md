@@ -6,6 +6,10 @@ Agent and Codex instructions for the blockchain-practice repository.
 
 An **mdBook-based Korean-language guidebook** for learning Rust and blockchain development, targeting experienced Node.js/TypeScript backend developers. The book follows a 4-week curriculum with 5 mini-projects, covering Rust fundamentals, Ethereum/Solidity, Solana/Anchor, and production integration patterns.
 
+The curriculum is intentionally interleaved: readers should learn Rust syntax and blockchain concepts in parallel, not finish all Rust theory before touching blockchain. Preserve this rhythm when reorganizing or adding chapters.
+
+This repository is maintained with both Claude Code and OpenAI Codex. AI-assisted content must still follow the Korean prose, TypeScript comparison, code-fence, build, and test rules below.
+
 - **Live site**: https://mcprotein.github.io/blockchain-practice/
 - **Content language**: Korean (한국어)
 - **Build tool**: mdBook
@@ -37,6 +41,7 @@ blockchain-practice/
 ├── src/                   # All chapter content (Markdown)
 │   ├── SUMMARY.md         # Table of contents — drives site navigation
 │   ├── introduction.md    # Preface
+│   ├── ch00-XX-*.md       # Orientation: vocabulary and code-reading map
 │   ├── ch01-XX-*.md       # Ch 1: Getting started with Rust
 │   ├── ch02-XX-*.md       # Ch 2: Ownership and borrowing
 │   ├── ch03-XX-*.md       # Ch 3: Structs, enums, pattern matching
@@ -121,15 +126,18 @@ Comparison code block pattern:
 // TypeScript: ...
 ```
 
-```rust
+```rust,ignore
 // Rust: ...
 ```
 ```
 
 ### Code Examples
 
-- All code examples must be **runnable** as written.
-- Rust examples should compile with `rustc` or as part of a Cargo project.
+- Code examples should be runnable when they are presented as standalone code. When an example is intentionally partial, compile-failing, output-only, or dependent on project setup, mark it explicitly with the correct code-fence tag.
+- Standalone Rust examples should compile with `rustc`, `mdbook test`, or as part of a Cargo project.
+- Use `rust,ignore` for Rust snippets that require external crates, omitted module context, project setup, Anchor/Alloy/Tokio scaffolding, or are meant only for reading.
+- Use `rust,compile_fail` for examples whose purpose is to demonstrate compiler errors.
+- Use `text` for command output, directory trees, diagrams, and compiler output. Do not leave code fences untyped.
 - Solidity examples should target a recent Solidity version (^0.8.x).
 - Anchor/Solana examples should target the Anchor version used in `practice/`.
 - Do not include placeholder comments like `// TODO` or `// ...` in final examples.
@@ -156,7 +164,7 @@ A passing build produces **0 errors**. The goal is also **0 warnings** — warni
 mdbook test
 ```
 
-Rust code blocks annotated with ` ```rust ` are executed as doctests. Blocks that should not be tested must be annotated with ` ```rust,ignore ` or ` ```rust,no_run `.
+Rust code blocks annotated with ` ```rust ` are executed as doctests. Blocks that should not be tested must be annotated with ` ```rust,ignore `, ` ```rust,no_run `, or ` ```rust,compile_fail ` as appropriate. All non-code outputs and diagrams must use ` ```text `.
 
 ### Manual verification
 
@@ -173,8 +181,9 @@ After `mdbook serve --open`, verify:
 3. **SUMMARY.md must stay in sync** — adding a file without updating SUMMARY.md breaks navigation.
 4. **No commits of `book/`** — the build output directory is gitignored.
 5. **No commits of `.omc/`** — AI agent state files are gitignored.
-6. **Runnable code only** — broken code examples undermine the learning goal.
+6. **Code-fence tags must be accurate** — use `text`, `bash`, `typescript`, `solidity`, `rust,ignore`, `rust,no_run`, or `rust,compile_fail` instead of untyped fences.
 7. **`mdbook build` must produce 0 errors** — treat any build error as a blocking issue.
+8. **`mdbook test` must pass** — doctest failures indicate bad Rust fence classification or broken standalone examples.
 
 ## CI/CD
 

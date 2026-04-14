@@ -2,6 +2,8 @@
 
 [시작하기 전에](./introduction.md)
 
+- [먼저 보는 용어와 코드 읽기 지도](./ch00-00-vocabulary-and-code-map.md)
+
 ---
 
 # 1주차: Rust 기초 + 블록체인 첫걸음
@@ -15,11 +17,11 @@
   - [소유권 규칙](./ch02-01-ownership-rules.md)
   - [참조와 빌림](./ch02-02-references.md)
   - [슬라이스](./ch02-03-slices.md)
-- [블록과 체인 구조](./ch09-02-blocks-and-chain.md)
 - [구조체, 열거형, 패턴 매칭](./ch03-00-structs-enums.md)
   - [구조체 정의와 사용](./ch03-01-structs.md)
   - [열거형과 Option](./ch03-02-enums.md)
   - [match와 패턴 매칭](./ch03-03-pattern-matching.md)
+- [블록과 체인 구조](./ch09-02-blocks-and-chain.md)
 - [합의 알고리즘](./ch09-03-consensus.md)
 - [미니프로젝트: Rust로 블록체인 만들기](./ch08-00-project-blockchain.md)
 

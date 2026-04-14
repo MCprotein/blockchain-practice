@@ -4,7 +4,7 @@
 
 `match`는 Rust에서 가장 강력한 제어 흐름 구조입니다. TypeScript의 `switch`와 유사하지만 훨씬 강력합니다.
 
-```rust
+```rust,ignore
 enum Coin {
     Penny,
     Nickel,
@@ -38,7 +38,7 @@ function valueInCents(coin: Coin): number {
 
 **`match`의 핵심 규칙: 모든 경우를 처리해야 한다 (exhaustive)**
 
-```rust
+```rust,ignore
 fn value_in_cents(coin: &Coin) -> u32 {
     match coin {
         Coin::Penny   => 1,
@@ -55,7 +55,7 @@ fn value_in_cents(coin: &Coin) -> u32 {
 
 각 `match` 팔은 `패턴 => 표현식` 형태입니다:
 
-```rust
+```rust,ignore
 fn describe_number(n: i32) -> &'static str {
     match n {
         // 단일 값
@@ -86,7 +86,7 @@ fn main() {
 
 ### 여러 줄 팔
 
-```rust
+```rust,ignore
 fn process_block(block: &Block) -> String {
     match block.status {
         BlockStatus::Pending => {
@@ -109,7 +109,7 @@ fn process_block(block: &Block) -> String {
 
 ## 데이터를 가진 열거형 패턴 매칭
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 enum Message {
     Quit,
@@ -153,7 +153,7 @@ fn main() {
 
 ### 구조체 구조 분해
 
-```rust
+```rust,ignore
 struct Point {
     x: f64,
     y: f64,
@@ -193,7 +193,7 @@ fn main() {
 
 ### 튜플 구조 분해
 
-```rust
+```rust,ignore
 fn main() {
     let (a, b, c) = (1, 2, 3);
     println!("{} {} {}", a, b, c);
@@ -210,7 +210,7 @@ fn main() {
 
 ### 열거형 구조 분해
 
-```rust
+```rust,ignore
 #[derive(Debug)]
 enum TransactionResult {
     Success { txid: String, block_height: u64 },
@@ -237,7 +237,7 @@ fn handle_result(result: TransactionResult) {
 
 ## 와일드카드와 변수 바인딩
 
-```rust
+```rust,ignore
 fn main() {
     let num = 7u32;
 
@@ -269,7 +269,7 @@ fn main() {
 
 ### @ 바인딩 활용
 
-```rust
+```rust,ignore
 fn categorize_block_height(height: u64) -> String {
     match height {
         // 값을 n에 바인딩하면서 범위 검사
@@ -287,7 +287,7 @@ fn categorize_block_height(height: u64) -> String {
 
 패턴에 추가 조건을 붙일 수 있습니다:
 
-```rust
+```rust,ignore
 fn classify_transaction(amount: u64, is_confirmed: bool) -> &'static str {
     match (amount, is_confirmed) {
         (0, _) => "zero-value transaction",
@@ -313,7 +313,7 @@ fn main() {
 
 `match`가 한 패턴만 처리할 때, `if let`이 더 간결합니다:
 
-```rust
+```rust,ignore
 fn main() {
     let some_value: Option<u32> = Some(42);
 
@@ -346,7 +346,7 @@ fn main() {
 
 ### 블록체인 코드에서 if let 활용
 
-```rust
+```rust,ignore
 fn get_block_data(blockchain: &Blockchain, index: u64) -> Option<String> {
     blockchain.blocks.get(index as usize).map(|b| b.data.clone())
 }
@@ -374,7 +374,7 @@ fn main() {
 
 ## while let: 조건부 반복
 
-```rust
+```rust,ignore
 fn main() {
     let mut stack = vec![1, 2, 3, 4, 5];
 
@@ -397,7 +397,7 @@ fn main() {
 
 패턴이 매칭되지 않으면 early return하는 패턴:
 
-```rust
+```rust,ignore
 fn process_transaction(tx_data: &str) -> Result<(), String> {
     // tx_data를 파싱
     let parts: Vec<&str> = tx_data.split(':').collect();
@@ -434,7 +434,7 @@ fn main() {
 
 bool을 반환하는 패턴 매칭 단축형:
 
-```rust
+```rust,ignore
 #[derive(PartialEq)]
 enum Status { Active, Inactive, Suspended }
 
@@ -465,7 +465,7 @@ fn main() {
 
 ## 전체 패턴 종류 요약
 
-```rust
+```rust,ignore
 fn all_patterns(x: i32) {
     match x {
         // 1. 리터럴

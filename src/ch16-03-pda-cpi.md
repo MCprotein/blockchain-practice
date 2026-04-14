@@ -6,7 +6,7 @@
 
 Solana에서 일반 Account는 개인키(private key)로 서명해야 트랜잭션을 보낼 수 있습니다. 그런데 프로그램이 "자신을 대신해서" Account를 제어하고 싶을 때 문제가 생깁니다.
 
-```
+```text
 시나리오: 에스크로(Escrow) 프로그램
 ─────────────────────────────────────
 Alice가 100 SOL을 에스크로에 예치
@@ -29,7 +29,7 @@ Alice가 100 SOL을 에스크로에 예치
 
 일반 Keypair는 ed25519 타원 곡선 위에 존재하는 점(point)입니다. PDA는 의도적으로 **곡선 밖**에 있는 주소를 사용합니다.
 
-```
+```text
 ed25519 타원 곡선:
 
     y
@@ -52,7 +52,7 @@ find_program_address(seeds, program_id):
   bump는 255부터 시작해서 감소 (canonical bump = 최초 성공 값)
 ```
 
-```rust
+```rust,ignore
 // PDA 생성 코드
 use solana_program::pubkey::Pubkey;
 
@@ -104,7 +104,7 @@ console.log("Bump:", bump);
 
 #### 패턴 1: 사용자별 데이터 계정
 
-```rust
+```rust,ignore
 // 각 사용자마다 고유한 데이터 계정을 결정론적으로 생성
 let seeds = &[
     b"player",
@@ -117,7 +117,7 @@ let seeds = &[
 
 #### 패턴 2: 글로벌 상태 계정
 
-```rust
+```rust,ignore
 // 프로그램 전체의 설정/상태를 저장
 let seeds = &[b"global-config", &[bump]];
 // → 프로그램당 하나의 고정된 설정 계정
@@ -125,7 +125,7 @@ let seeds = &[b"global-config", &[bump]];
 
 #### 패턴 3: 에스크로 금고
 
-```rust
+```rust,ignore
 // 특정 거래의 SOL/토큰을 보관하는 금고
 let seeds = &[
     b"escrow",
@@ -139,7 +139,7 @@ let seeds = &[
 
 ### PDA Rust 코드 예제: 사용자 프로필 시스템
 
-```rust
+```rust,ignore
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
@@ -242,7 +242,7 @@ pub fn process_instruction(
 
 CPI는 하나의 프로그램이 다른 프로그램을 호출하는 기능입니다. 이더리움의 external call 또는 NestJS에서 서비스가 다른 서비스를 호출하는 것과 유사합니다.
 
-```
+```text
 이더리움 external call:
 ─────────────────────────────
 MyContract.foo() {
@@ -272,7 +272,7 @@ invoke(
 
 ### invoke() vs invoke_signed()
 
-```rust
+```rust,ignore
 // invoke(): 일반 CPI (PDA 서명 불필요)
 // 사용 케이스: user가 서명자인 경우
 invoke(
@@ -293,7 +293,7 @@ invoke_signed(
 
 ### CPI 예제 1: System Program에 CPI로 SOL 전송
 
-```rust
+```rust,ignore
 // 시나리오: 내 프로그램의 PDA(금고)에서 SOL을 사용자에게 전송
 
 use solana_program::{
@@ -344,7 +344,7 @@ pub fn withdraw_from_vault(
 
 ### CPI 예제 2: Token Program에 CPI로 토큰 전송
 
-```rust
+```rust,ignore
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 use anchor_lang::prelude::*;
 
@@ -401,7 +401,7 @@ pub fn transfer_tokens_with_pda<'info>(
 
 ### 이더리움 external call과의 비교
 
-```
+```text
 이더리움 external call:
 ─────────────────────────────────────────────────────────────
 // Re-entrancy 공격 가능!
@@ -435,7 +435,7 @@ invoke(
 
 ### PDA + CPI 종합 예제: 에스크로 프로그램
 
-```rust
+```rust,ignore
 // 완전한 에스크로 흐름:
 // 1. Alice가 SOL을 에스크로 PDA에 예치
 // 2. 조건 확인 후 프로그램이 Bob에게 자동 전송
@@ -534,7 +534,7 @@ pub fn release_escrow(
 
 ## PDA와 CPI 핵심 정리
 
-```
+```text
 PDA 요약:
 ┌────────────────────────────────────────────────────┐
 │  PDA = seeds + program_id → 곡선 밖의 결정론적 주소 │

@@ -11,7 +11,7 @@
 
 Node.js 서비스라면 코드를 고치고 재배포하면 끝이다. 스마트 컨트랙트는?
 
-```
+```text
 문제: 컨트랙트 A에 버그 발견
                     ↓
 새 컨트랙트 B를 배포해도...
@@ -58,7 +58,7 @@ contract Caller {
 
 **delegatecall의 핵심:** 코드는 Logic에서 빌려오지만, **실행 환경(storage, msg.sender, msg.value)은 호출자(Caller)의 것**을 사용한다.
 
-```
+```text
 일반 call:
   Caller → [call] → Logic
                     ├─ msg.sender = Caller
@@ -90,14 +90,14 @@ logic.setValue.call(proxy, 42);
 
 ## 프록시 패턴 아키텍처
 
-```
+```text
 사용자 → Proxy 컨트랙트 → Logic(Implementation) 컨트랙트
           (데이터 저장)      (코드만 있음, 데이터 없음)
           (주소 불변)        (업그레이드 시 교체)
 ```
 
 업그레이드 시:
-```
+```text
 사용자 → Proxy 컨트랙트 → Logic V2 컨트랙트 (새 주소)
           (주소 그대로)    (새 코드)
           (데이터 그대로)
@@ -286,7 +286,10 @@ bytes32 constant ADMIN_SLOT =
 contract MyContractV1 is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     uint256 public value;      // slot 0 (OZ 내부 슬롯 제외)
     address public treasury;   // slot 1
-    // ...
+
+    function setValue(uint256 newValue) external onlyOwner {
+        value = newValue;
+    }
 }
 
 // V2 구현체 (올바른 업그레이드)
@@ -294,7 +297,10 @@ contract MyContractV2 is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     uint256 public value;      // slot 0 — 유지!
     address public treasury;   // slot 1 — 유지!
     uint256 public newFeature; // slot 2 — 새로 추가 (뒤에만 가능)
-    // ...
+
+    function setNewFeature(uint256 newValue) external onlyOwner {
+        newFeature = newValue;
+    }
 }
 
 // V2 구현체 (위험한 업그레이드 — 하지 말 것)

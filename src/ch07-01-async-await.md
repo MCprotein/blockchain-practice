@@ -4,7 +4,7 @@
 
 `async fn`으로 정의한 함수는 `Future`를 반환합니다:
 
-```rust
+```rust,ignore
 // 동기 함수
 fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
@@ -28,7 +28,7 @@ async function greetAsync(name: string): Promise<string> {
 }
 ```
 
-```rust
+```rust,ignore
 // Rust: async fn은 Future를 반환 (Future ≈ Promise)
 async fn greet_async(name: &str) -> String {
     format!("Hello, {}!", name)
@@ -41,7 +41,7 @@ async fn greet_async(name: &str) -> String {
 
 `Future`는 아직 완료되지 않은 비동기 계산을 나타냅니다:
 
-```rust
+```rust,ignore
 // 표준 라이브러리에 이렇게 정의
 pub trait Future {
     type Output;
@@ -65,7 +65,7 @@ const promise = fetchData();  // 이미 실행 중!
 // 나중에 await하든 안 하든 실행됨
 ```
 
-```rust
+```rust,ignore
 // Rust Future: await하기 전까지 실행 안 됨
 let future = fetch_data();  // 아직 실행 안 됨!
 let result = future.await;  // 여기서 실행 시작
@@ -75,7 +75,7 @@ let result = future.await;  // 여기서 실행 시작
 
 ## .await 사용법
 
-```rust
+```rust,ignore
 async fn fetch_block(height: u64) -> Result<Block, String> {
     // 네트워크 요청 (비동기)
     let url = format!("https://api.blockchain.com/blocks/{}", height);
@@ -101,7 +101,7 @@ struct Block { index: u64, hash: String }
 
 ### .await는 async fn 안에서만
 
-```rust
+```rust,ignore
 // 에러! async 아닌 함수에서 .await 사용 불가
 fn not_async() {
     let result = fetch_block(1).await;  // 컴파일 에러
@@ -125,7 +125,7 @@ fn blocking_main() {
 
 `Future`는 혼자 실행될 수 없습니다. **실행자(executor)**가 필요합니다. 실행자는 `Future`를 `poll()`로 구동시키는 스케줄러입니다.
 
-```
+```text
 Future ──────────────────► Executor
 (비동기 계산의 명세)         (실제 실행하는 주체)
 
@@ -135,7 +135,7 @@ poll() → Ready(T) ──────► 결과 반환
 
 Node.js에서는 V8 엔진과 libuv가 이벤트 루프를 기본으로 제공합니다. Rust에서는 Tokio 등 외부 런타임이 이 역할을 합니다.
 
-```rust
+```rust,ignore
 // Tokio 런타임이 Future를 실행
 #[tokio::main]
 async fn main() {
@@ -160,7 +160,7 @@ fn main() {
 
 함수 전체가 아닌 일부만 비동기로 만들 때:
 
-```rust
+```rust,ignore
 fn main() {
     let future = async {
         // 이 블록은 async 컨텍스트
@@ -180,7 +180,7 @@ fn main() {
 
 ### tokio::join! — 여러 Future 동시 실행
 
-```rust
+```rust,ignore
 use tokio;
 
 async fn fetch_block(height: u64) -> String {
@@ -220,7 +220,7 @@ const [b1, b2, b3] = await Promise.all([
 
 ### tokio::select! — 가장 먼저 완료되는 것 선택
 
-```rust
+```rust,ignore
 use tokio;
 
 #[tokio::main]
@@ -256,7 +256,7 @@ const result = await Promise.race([
 
 ## 에러 처리와 async
 
-```rust
+```rust,ignore
 use reqwest;
 use serde_json::Value;
 

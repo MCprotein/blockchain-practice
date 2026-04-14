@@ -87,7 +87,9 @@ async function getBalance(tokenAddress: string, walletAddress: string) {
 function swapAnyERC20(address token, uint256 amount) external {
     // 어떤 ERC-20이든 동일한 인터페이스로 처리
     IERC20(token).transferFrom(msg.sender, address(this), amount);
-    // ... 스왑 로직
+    uint256 outputAmount = quoteOutput(token, amount);
+    require(outputAmount > 0, "ZERO_OUTPUT");
+    IERC20(token).transfer(msg.sender, outputAmount);
 }
 ```
 
@@ -99,7 +101,7 @@ function swapAnyERC20(address token, uint256 amount) external {
 
 ### 표준 제안 과정
 
-```
+```text
 1. 개발자가 EIP 제안 (GitHub PR)
 2. 커뮤니티 토론 및 피드백
 3. 레퍼런스 구현 작성
@@ -122,7 +124,7 @@ function swapAnyERC20(address token, uint256 amount) external {
 
 1 USDC = 다른 1 USDC. 완전히 동일하고 상호 교환 가능하다. 지폐처럼 개별 구분이 없다.
 
-```
+```text
 사용 사례:
 - 스테이블코인 (USDC, USDT, DAI)
 - 거버넌스 토큰 (UNI, COMP, AAVE)
@@ -137,7 +139,7 @@ ERC-20이 만들어진 2015년 이후 이더리움 생태계의 근간이 됐다
 
 각 토큰이 고유한 ID를 가지며 서로 다르다. 토큰 #1과 토큰 #2는 같은 컨트랙트에서 발행됐어도 다른 자산이다. 실물 미술품처럼 각각이 독립적인 가치를 가진다.
 
-```
+```text
 사용 사례:
 - 디지털 아트 (CryptoPunks, BAYC)
 - 게임 아이템 (특정 캐릭터, 무기)
@@ -151,7 +153,7 @@ ERC-20이 만들어진 2015년 이후 이더리움 생태계의 근간이 됐다
 
 하나의 컨트랙트에서 대체 가능 토큰과 대체 불가능 토큰을 모두 관리할 수 있다. 게임에서 금화(대체 가능)와 전설 검(대체 불가능)을 하나의 컨트랙트로 관리하는 식이다.
 
-```
+```text
 사용 사례:
 - 블록체인 게임 아이템
 - 이벤트 티켓 (같은 좌석 등급 = 대체 가능, 특정 좌석 = 대체 불가능)
@@ -170,7 +172,8 @@ interface IERC4626 is IERC20 {
     function totalAssets() external view returns (uint256);
     function deposit(uint256 assets, address receiver) external returns (uint256 shares);
     function withdraw(uint256 assets, address receiver, address owner) external returns (uint256 shares);
-    // ...
+    function convertToShares(uint256 assets) external view returns (uint256 shares);
+    function convertToAssets(uint256 shares) external view returns (uint256 assets);
 }
 ```
 
@@ -211,7 +214,7 @@ interface IERC20 {
 
 ### 시가총액 기준 주요 ERC-20 (2024년 기준)
 
-```
+```text
 스테이블코인:
 - USDT (Tether)       - 약 1000억 달러
 - USDC (Circle)       - 약 400억 달러
@@ -232,7 +235,7 @@ DeFi 거버넌스 토큰:
 
 토큰 표준이 생긴 이후 이더리움 생태계에서 폭발적인 혁신이 일어났다:
 
-```
+```text
 ICO (2017-2018):
 - 누구나 토큰을 발행하고 자금 조달 가능
 - 기존 VC 투자 없이 글로벌 크라우드펀딩
@@ -249,7 +252,7 @@ NFT (2021~):
 
 ## 이 챕터에서 다룰 내용
 
-```
+```text
 13-1: ERC-20 직접 구현
   - 6개 필수 함수 전체 구현
   - approve + transferFrom 2단계 패턴

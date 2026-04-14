@@ -4,7 +4,7 @@
 
 Anchor 프로그램의 테스트는 **TypeScript**로 작성합니다. Node.js 백엔드 개발자에게 매우 친숙한 환경입니다. 테스트 프레임워크는 Mocha + Chai를 사용하며, Jest와 유사한 패턴으로 작성합니다.
 
-```
+```text
 이더리움 테스트 스택:          Solana(Anchor) 테스트 스택:
 Solidity (프로그램)            Rust + Anchor (프로그램)
 Foundry (Forge) 또는           @coral-xyz/anchor (클라이언트)

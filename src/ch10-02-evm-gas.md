@@ -10,7 +10,7 @@
 
 Node.js 개발자에게 가상 머신은 익숙한 개념이다.
 
-```
+```text
 Java의 JVM:
   Java 코드 → 컴파일 → .class(바이트코드) → JVM이 실행
   어떤 OS에서도 동일하게 동작 ("Write once, run anywhere")
@@ -27,7 +27,7 @@ EVM:
 
 ### 1.2 EVM의 종류
 
-```
+```text
 구현체별 EVM:
   Geth    (Go)    → go-ethereum의 EVM
   Besu    (Java)  → Hyperledger Besu의 EVM
@@ -44,7 +44,7 @@ EVM:
 
 ### 2.1 세 가지 저장 영역
 
-```
+```text
 EVM 실행 컨텍스트:
 
 ┌─────────────────────────────────────────────────────────┐
@@ -84,7 +84,7 @@ EVM 실행 컨텍스트:
 
 ### 2.2 Node.js와의 비교
 
-```
+```text
 Node.js V8 엔진:
   힙(Heap):     객체, 배열 (GC가 관리)
   스택(Stack):  함수 호출, 지역 변수
@@ -104,7 +104,7 @@ EVM은 바이트코드를 인터프리팅 (훨씬 느림, 하지만 결정론적
 
 Solidity 코드는 EVM이 이해하는 **바이트코드**로 컴파일된다. 각 바이트는 **옵코드(Opcode)**라는 명령어를 나타낸다.
 
-```
+```text
 예: 두 숫자를 더하는 간단한 연산
 
 Solidity:
@@ -144,7 +144,7 @@ EVM 바이트코드: (16진수)
 
 ### 3.1 왜 가스가 필요한가?
 
-```
+```text
 가스 없는 이더리움의 문제:
 
 // 이런 컨트랙트를 배포한다면?
@@ -166,7 +166,7 @@ contract Malicious {
 
 ### 3.2 가스 기본 개념
 
-```
+```text
 가스 = 계산 작업량의 단위
 
 gasLimit: 이 TX에 최대 얼마나 쓸 것인가 (사용자 설정)
@@ -183,7 +183,7 @@ gasPrice: 가스 1단위당 얼마를 낼 것인가 (wei)
 ```
 
 **가스 한도 (gasLimit)가 충분하지 않으면?**
-```
+```text
 gasLimit = 10,000 gas
 실제 필요 = 21,000 gas
 
@@ -197,7 +197,7 @@ gasLimit = 10,000 gas
 
 2021년 London 업그레이드에서 도입된 수수료 개혁:
 
-```
+```text
 EIP-1559 이전 (경매 방식):
   채굴자가 gasPrice 높은 TX부터 처리
   → 가스비 예측 불가
@@ -213,7 +213,7 @@ baseFee는 소각(burn)됨! ETH 공급량 감소 효과
 ```
 
 **baseFee 조절 메커니즘:**
-```
+```text
 목표 블록 가스: 15,000,000 gas
 최대 블록 가스: 30,000,000 gas
 
@@ -228,7 +228,7 @@ baseFee는 소각(burn)됨! ETH 공급량 감소 효과
 
 ### 3.4 주요 가스 비용 예시
 
-```
+```text
 스토리지 관련 (가장 비쌈):
   SSTORE (새 값, 0→비영): 20,000 gas
   SSTORE (기존 값 변경):   2,900 gas
@@ -262,7 +262,7 @@ baseFee는 소각(burn)됨! ETH 공급량 감소 효과
 
 ### 4.1 컴파일 과정
 
-```
+```text
 Solidity 소스코드 (.sol)
         │
         ▼ solc 컴파일러
@@ -303,7 +303,7 @@ contract SimpleCounter {
 ```
 
 `increment()` 함수 호출 시 EVM 실행:
-```
+```text
 1. PUSH1 0x00    스택: [0]         → 스토리지 슬롯 0 주소
 2. SLOAD         스택: [현재count]  → 슬롯 0에서 값 읽기 (2,100 gas)
 3. PUSH1 0x01    스택: [현재count, 1]
@@ -314,7 +314,7 @@ contract SimpleCounter {
 ```
 
 **가스 계산:**
-```
+```text
 기본 TX 비용:           21,000
 calldata (함수 시그니처):    64  (4바이트 × 16)
 SLOAD (cold):            2,100
@@ -331,7 +331,7 @@ SSTORE (새 값):          20,000
 
 Node.js 개발자에게 친숙한 방식으로 비교:
 
-```
+```text
 calldata:
   역할: 함수 호출 시 전달되는 입력 데이터 (읽기 전용)
   Node.js 비유: req.body (HTTP 요청 본문)
@@ -396,7 +396,7 @@ function goodSum(uint256[] storage arr) internal view returns (uint256) {
 
 이더리움의 가장 중요한 속성 중 하나:
 
-```
+```text
 결정론적 실행:
   동일한 상태 + 동일한 TX → 항상 동일한 결과
 
@@ -461,7 +461,7 @@ inspectEVMState().catch(console.error);
 
 ## 8. 핵심 정리
 
-```
+```text
 EVM 아키텍처:
   ┌────────────────────────────────────────┐
   │  스택: 연산 작업 (빠름, 싸다)          │

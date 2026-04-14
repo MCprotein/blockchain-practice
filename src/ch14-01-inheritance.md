@@ -9,7 +9,7 @@ Solidity에서 상속은 `is` 키워드를 사용한다. TypeScript의 `extends`
 class Animal {
     name: string;
     constructor(name: string) { this.name = name; }
-    speak(): string { return "..."; }
+    speak(): string { return `${this.name} makes a sound`; }
 }
 class Dog extends Animal {
     speak(): string { return "Woof!"; }
@@ -19,7 +19,7 @@ class Dog extends Animal {
 contract Animal {
     string public name;
     constructor(string memory _name) { name = _name; }
-    function speak() public virtual returns (string memory) { return "..."; }
+    function speak() public virtual returns (string memory) { return "Animal sound"; }
 }
 contract Dog is Animal {
     constructor() Animal("Dog") {}
@@ -104,7 +104,11 @@ Solidity는 Python의 C3 선형화 알고리즘을 사용한다. `is` 뒤에 나
 
 ```solidity
 // 상속 순서: 가장 기본(base) → 가장 파생(derived) 순으로
-contract D is A, B, C { ... }
+contract D is A, B, C {
+    function foo() public override(A, B, C) returns (string memory) {
+        return super.foo();
+    }
+}
 //              ↑ 가장 기본   ↑ 가장 파생
 
 // super.foo() 호출 시 MRO(Method Resolution Order):
@@ -230,8 +234,9 @@ contract TokenSwapper {
         uint256 amount
     ) external {
         IERC20(fromToken).transferFrom(msg.sender, address(this), amount);
-        // ... 스왑 로직 ...
-        IERC20(toToken).transfer(msg.sender, amount);
+        uint256 outputAmount = quote(fromToken, toToken, amount);
+        require(outputAmount > 0, "ZERO_OUTPUT");
+        IERC20(toToken).transfer(msg.sender, outputAmount);
     }
 }
 ```
@@ -253,7 +258,7 @@ function getBalance(tokenAddress: string, account: string): Promise<bigint> {
 
 ## virtual과 override 키워드
 
-```
+```text
 virtual  = "자식이 이 함수를 재정의할 수 있다"
 override = "이 함수는 부모의 virtual 함수를 재정의한다"
 ```
@@ -278,7 +283,9 @@ contract Child is Base {
     }
 
     // 이건 컴파일 에러:
-    // function cannotOverride() public override returns (string memory) { ... }
+    // function cannotOverride() public override returns (string memory) {
+    //     return "Child";
+    // }
 }
 
 contract GrandChild is Child {

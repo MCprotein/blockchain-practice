@@ -31,7 +31,7 @@
 
 ## 프로젝트 구조
 
-```
+```text
 mini-trace/
 ├── Cargo.toml
 ├── .env
@@ -286,7 +286,7 @@ CREATE INDEX IF NOT EXISTS idx_trace_events_created_at ON trace_events(created_a
 
 ### src/config.rs
 
-```rust
+```rust,ignore
 use anyhow::Result;
 
 #[derive(Debug, Clone)]
@@ -326,7 +326,7 @@ impl Config {
 
 ### src/errors.rs
 
-```rust
+```rust,ignore
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -384,7 +384,7 @@ impl IntoResponse for AppError {
 
 ### src/models.rs
 
-```rust
+```rust,ignore
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -444,7 +444,7 @@ pub struct VerifyResponse {
 
 ### src/services/blockchain.rs
 
-```rust
+```rust,ignore
 use alloy::{
     network::EthereumWallet,
     primitives::{Address, FixedBytes},
@@ -601,7 +601,7 @@ impl BlockchainService {
 
 ### src/services/trace.rs
 
-```rust
+```rust,ignore
 use crate::{
     errors::AppError,
     models::{
@@ -683,7 +683,8 @@ impl TraceService {
             }
             Err(e) => {
                 tracing::warn!("블록체인 기록 실패 (나중에 재시도): {}", e);
-                // TODO: 재시도 큐에 추가
+                // 운영 버전에서는 outbox 테이블이나 메시지 큐에
+                // event_id와 data_hash를 저장해 백그라운드 워커가 재시도한다.
             }
         }
         
@@ -829,7 +830,7 @@ impl TraceService {
 
 ### src/routes.rs
 
-```rust
+```rust,ignore
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -916,7 +917,7 @@ async fn verify_event(
 
 ### src/main.rs
 
-```rust
+```rust,ignore
 mod config;
 mod errors;
 mod models;
@@ -997,7 +998,7 @@ async fn main() -> Result<()> {
 
 ### src/services/mod.rs
 
-```rust
+```rust,ignore
 pub mod blockchain;
 pub mod trace;
 ```

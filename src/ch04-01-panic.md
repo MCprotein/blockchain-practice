@@ -4,7 +4,7 @@
 
 `panic!`은 프로그램이 계속 실행될 수 없는 상황에서 즉시 종료하는 메커니즘입니다. 스택을 풀어내며(unwinding) 정리 코드를 실행하거나, 즉시 중단(abort)합니다.
 
-```rust
+```rust,ignore
 fn main() {
     panic!("Something went terribly wrong!");
     // thread 'main' panicked at 'Something went terribly wrong!', src/main.rs:2:5
@@ -15,7 +15,7 @@ fn main() {
 
 ### 1. 명시적 panic! 호출
 
-```rust
+```rust,ignore
 fn divide(a: f64, b: f64) -> f64 {
     if b == 0.0 {
         panic!("Division by zero!");
@@ -26,7 +26,7 @@ fn divide(a: f64, b: f64) -> f64 {
 
 ### 2. 배열/Vec 범위 초과
 
-```rust
+```rust,ignore
 fn main() {
     let v = vec![1, 2, 3];
     println!("{}", v[10]);
@@ -36,7 +36,7 @@ fn main() {
 
 ### 3. unwrap()이 None에 호출될 때
 
-```rust
+```rust,ignore
 fn main() {
     let value: Option<i32> = None;
     let x = value.unwrap();
@@ -46,7 +46,7 @@ fn main() {
 
 ### 4. expect()
 
-```rust
+```rust,ignore
 fn main() {
     let value: Option<i32> = None;
     let x = value.expect("value must exist here");
@@ -56,7 +56,7 @@ fn main() {
 
 ### 5. 정수 오버플로 (debug 모드)
 
-```rust
+```rust,ignore
 fn main() {
     let x: u8 = 255;
     let y = x + 1;  // debug 모드에서 panic! (overflow)
@@ -66,7 +66,7 @@ fn main() {
 
 ### 6. assert! 매크로
 
-```rust
+```rust,ignore
 fn main() {
     let x = 5;
     assert!(x > 10, "x must be greater than 10, got {}", x);
@@ -85,7 +85,7 @@ fn main() {
 
 **1. 불변식(invariant) 위반**
 
-```rust
+```rust,ignore
 fn add_block(&mut self, block: Block) {
     // 이 조건이 깨지면 버그 — 프로그램 자체가 잘못된 것
     assert!(
@@ -100,7 +100,7 @@ fn add_block(&mut self, block: Block) {
 
 **2. 테스트 코드**
 
-```rust
+```rust,ignore
 #[cfg(test)]
 mod tests {
     #[test]
@@ -114,7 +114,7 @@ mod tests {
 
 **3. 예제/프로토타입 코드 (todo!, unimplemented!)**
 
-```rust
+```rust,ignore
 fn mine_block(&mut self) -> Block {
     todo!("PoW mining not yet implemented")
     // thread 'main' panicked at 'not yet implemented: PoW mining not yet implemented'
@@ -131,7 +131,7 @@ fn unused_function() {
 
 **4. 외부 입력이 아닌, 프로그래머의 실수로만 발생할 수 있는 상황**
 
-```rust
+```rust,ignore
 // 컴파일러가 None이 불가능하다고 판단하지 못하지만,
 // 로직상 절대 None이 될 수 없는 경우
 let last = self.blocks.last().expect("Blockchain must have at least one block");
@@ -141,7 +141,7 @@ let last = self.blocks.last().expect("Blockchain must have at least one block");
 
 **외부 입력, 네트워크, 파일 등 예상 가능한 에러**
 
-```rust
+```rust,ignore
 // 나쁜 코드 — 외부 입력을 panic으로 처리
 fn parse_block_height(s: &str) -> u64 {
     s.parse::<u64>().unwrap()  // 잘못된 입력이면 panic!
@@ -166,13 +166,14 @@ Solana 온체인 프로그램에서 `panic!`이 발생하면:
 3. 수수료는 차감됨 (가스는 소모됨)
 4. 온체인 로그에 에러 메시지가 남음
 
-```rust
+```rust,ignore
 // Solana 프로그램에서 나쁜 패턴
 pub fn process_transfer(ctx: Context<Transfer>, amount: u64) -> Result<()> {
     let balance = ctx.accounts.source.amount;
     // 잔액 부족 시 panic! — 잘못된 접근
     assert!(balance >= amount, "Insufficient balance");
-    // ...
+    ctx.accounts.source.amount -= amount;
+    ctx.accounts.destination.amount += amount;
 }
 
 // 좋은 패턴 — 에러를 반환
@@ -181,7 +182,8 @@ pub fn process_transfer(ctx: Context<Transfer>, amount: u64) -> Result<()> {
     if balance < amount {
         return Err(ErrorCode::InsufficientFunds.into());
     }
-    // ...
+    ctx.accounts.source.amount -= amount;
+    ctx.accounts.destination.amount += amount;
     Ok(())
 }
 ```
@@ -193,7 +195,7 @@ Tokio 비동기 런타임에서 태스크 내부의 `panic!`은:
 - `JoinHandle`에서 에러로 처리 가능
 - 하지만 예기치 않은 상태 불일치를 만들 수 있음
 
-```rust
+```rust,ignore
 // 프로덕션 서버에서 — panic을 잡아서 처리
 use std::panic;
 
@@ -235,7 +237,7 @@ RUST_BACKTRACE=full cargo run
 ```
 
 출력 예시:
-```
+```text
 thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 10', src/main.rs:3:20
 stack backtrace:
    0: rust_begin_unwind
@@ -255,7 +257,7 @@ stack backtrace:
 | `unimplemented!()` | 의도적으로 구현하지 않음 | 트레이트 메서드 중 일부만 구현 |
 | `unreachable!()` | 도달할 수 없는 코드 | 로직상 불가능한 분기 |
 
-```rust
+```rust,ignore
 enum Direction { North, South, East, West }
 
 fn turn_left(dir: Direction) -> Direction {

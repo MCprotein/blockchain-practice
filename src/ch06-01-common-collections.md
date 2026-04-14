@@ -6,7 +6,7 @@
 
 ### 생성
 
-```rust
+```rust,ignore
 fn main() {
     // 빈 Vec 생성
     let v1: Vec<i32> = Vec::new();
@@ -43,7 +43,7 @@ const v5 = Array.from({ length: 10 }, (_, i) => i);
 
 ### 읽기와 수정
 
-```rust
+```rust,ignore
 fn main() {
     let mut v = vec![10, 20, 30, 40, 50];
 
@@ -83,7 +83,7 @@ fn main() {
 
 ### 반복
 
-```rust
+```rust,ignore
 fn main() {
     let v = vec![1, 2, 3, 4, 5];
 
@@ -115,7 +115,7 @@ fn main() {
 
 ### 유용한 메서드
 
-```rust
+```rust,ignore
 fn main() {
     let mut v = vec![3, 1, 4, 1, 5, 9, 2, 6, 5, 3];
 
@@ -172,7 +172,7 @@ fn main() {
 
 ### 블록체인에서의 Vec 활용
 
-```rust
+```rust,ignore
 struct MerkleTree {
     leaves: Vec<String>,  // 트랜잭션 해시들
 }
@@ -220,7 +220,7 @@ fn hash(s: &str) -> String {
 
 ### 생성과 변환
 
-```rust
+```rust,ignore
 fn main() {
     // 생성 방법들
     let s1 = String::new();
@@ -241,7 +241,7 @@ fn main() {
 
 ### 이어붙이기
 
-```rust
+```rust,ignore
 fn main() {
     // push_str: 문자열 추가
     let mut s = String::from("Hello");
@@ -266,7 +266,7 @@ fn main() {
 
 ### 인덱싱과 슬라이싱
 
-```rust
+```rust,ignore
 fn main() {
     let s = String::from("hello");
 
@@ -303,7 +303,7 @@ fn main() {
 
 ### 주요 String 메서드
 
-```rust
+```rust,ignore
 fn main() {
     let s = String::from("  Hello, World!  ");
 
@@ -359,7 +359,7 @@ fn main() {
 
 ### 생성과 삽입
 
-```rust
+```rust,ignore
 use std::collections::HashMap;
 
 fn main() {
@@ -390,7 +390,7 @@ fn main() {
 
 ### 읽기
 
-```rust
+```rust,ignore
 use std::collections::HashMap;
 
 fn main() {
@@ -424,7 +424,7 @@ fn main() {
 
 ### 업데이트
 
-```rust
+```rust,ignore
 use std::collections::HashMap;
 
 fn main() {
@@ -463,7 +463,7 @@ fn main() {
 
 ### 반복
 
-```rust
+```rust,ignore
 use std::collections::HashMap;
 
 fn main() {
@@ -499,7 +499,7 @@ fn main() {
 
 ### 블록체인에서의 HashMap 활용
 
-```rust
+```rust,ignore
 use std::collections::HashMap;
 
 struct UTXO {
@@ -571,7 +571,7 @@ map.delete("key");
 map.size;
 ```
 
-```rust
+```rust,ignore
 // Rust
 let mut v = vec![1, 2, 3];
 v.push(4);

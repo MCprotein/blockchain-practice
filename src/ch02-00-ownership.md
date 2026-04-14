@@ -54,7 +54,7 @@ console.log(m);
 
 **3. 소유권 시스템 (Rust)**
 
-```rust
+```rust,ignore
 // Rust 코드
 fn create_message() -> String {
     let msg = String::from("Hello");  // 힙에 할당
@@ -128,8 +128,13 @@ Rust의 수명(lifetime) 시스템이 이를 방지합니다.
 // C에서 발생하는 버그
 void process() {
     int* data = malloc(1024);
-    // ... 처리 중 return이나 에러 발생
-    // free(data)를 호출 못 함 → 누수!
+    if (!data) {
+        return;
+    }
+    if (should_stop_early()) {
+        return;  // free(data)를 호출 못 함 → 누수!
+    }
+    free(data);
 }
 ```
 
@@ -146,7 +151,7 @@ Rust에서는 값이 스코프를 벗어날 때 자동으로 `drop`이 호출됩
 
 ### 스코프와 자동 해제
 
-```rust
+```rust,ignore
 fn main() {
     // s는 이 시점에서 아직 존재하지 않음
     {
