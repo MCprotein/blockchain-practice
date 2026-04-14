@@ -332,4 +332,4 @@ async fn handle_transaction(tx: Transaction) {
 - `Option`에서도 `?` 사용 가능 (Option을 반환하는 함수에서)
 - NestJS의 예외 기반 에러처리 vs Rust의 반환값 기반 에러 처리
 
-다음 장에서 제네릭과 트레이트를 배웁니다.
+다음으로는 이더리움 아키텍처를 살펴본 후, 제네릭과 트레이트를 배웁니다.

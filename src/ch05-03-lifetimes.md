@@ -328,4 +328,4 @@ error[E0502]: cannot borrow `x` as mutable because it is also borrowed as immuta
 - `'static`: 프로그램 전체 기간 동안 유효 (문자열 리터럴, 상수)
 - **실용 팁**: 수명이 어려우면 소유된 타입(`String`, `Vec`)으로 해결
 
-다음 장에서 컬렉션(Vec, HashMap 등)을 배웁니다.
+다음으로는 Solidity 기초를 배웁니다. 컬렉션(Vec, HashMap 등)은 3주차에서 다룹니다.

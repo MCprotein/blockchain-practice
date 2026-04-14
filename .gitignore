@@ -1,2 +1,5 @@
 .omc
 book/
+.omx/
+target/
+Cargo.lock

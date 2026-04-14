@@ -485,4 +485,4 @@ fn analyze_transactions(transactions: &[Transaction]) {
 - 지연 평가: 소비 메서드 호출 전까지 실행되지 않음
 - `collect::<Vec<_>>()` — 타입 힌트가 필요할 때 turbofish 문법 사용
 
-다음 장에서 비동기 프로그래밍(async/await)을 배웁니다.
+다음으로는 스마트 컨트랙트 심화 주제를 다룬 후, 비동기 프로그래밍을 배웁니다.

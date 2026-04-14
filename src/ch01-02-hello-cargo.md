@@ -449,4 +449,4 @@ export { Transaction } from './tx';
 - 개발 빌드(`cargo build`)와 릴리스 빌드(`cargo build --release`)의 성능 차이가 큼
 - 모듈 시스템은 파일 이름 기반, `mod` 키워드로 선언
 
-다음 챕터부터는 Rust의 핵심인 소유권 시스템을 배웁니다.
+다음으로는 블록체인의 기본 개념을 먼저 살펴본 후, Rust의 핵심인 소유권 시스템을 배웁니다.

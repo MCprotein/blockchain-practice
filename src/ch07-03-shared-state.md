@@ -430,4 +430,4 @@ impl Blockchain { fn new() -> Self { Blockchain { blocks: vec![] } } }
 - `.await` 중에 락을 보유하지 않도록 주의 (교착 상태 위험)
 - Node.js는 싱글 스레드 → 이벤트 루프로 안전, Rust는 멀티 스레드 → 명시적 동기화 필요
 
-다음 장에서 배운 모든 것을 종합해 미니 블록체인을 구현합니다.
+다음으로는 Solana 아키텍처를 배웁니다.
