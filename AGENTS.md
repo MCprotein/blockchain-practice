@@ -199,6 +199,7 @@ Workflow file: `.github/workflows/deploy.yml`
 
 - **Trigger**: push to `main` branch, or manual `workflow_dispatch`
 - **Runner**: `ubuntu-latest`
+- **Node runtime**: workflow sets `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to opt GitHub JavaScript actions into Node.js 24 and avoid Node.js 20 deprecation drift
 - **Steps**:
   1. `actions/checkout@v4`
   2. Install mdBook via `peaceiris/actions-mdbook@v2` (latest version)
