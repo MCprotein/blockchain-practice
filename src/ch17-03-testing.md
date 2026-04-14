@@ -133,7 +133,11 @@ import { BN } from "@coral-xyz/anchor";
 // u64 타입 인자
 await program.methods
   .mintPoints(new BN(1000))    // u64 → BN
-  .accounts({...})
+  .accounts({
+    pointSystem: pointSystemPda,
+    userPoint: userPointPda,
+    authority: provider.wallet.publicKey,
+  })
   .rpc();
 
 // BN 연산:
@@ -588,7 +592,10 @@ async function sendParallelTransactions(count: number) {
   const promises = Array.from({ length: count }, (_, i) =>
     program.methods
       .someInstruction(i)
-      .accounts({...})
+      .accounts({
+        user: provider.wallet.publicKey,
+        systemProgram: web3.SystemProgram.programId,
+      })
       .rpc()
   );
 

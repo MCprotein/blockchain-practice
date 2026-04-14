@@ -121,6 +121,28 @@ mdbook test
 
 문서의 실행 대상 Rust 코드 블록을 검사합니다. 출력 예시, 디렉토리 구조, 의도적 실패 예시, 외부 프로젝트 전체 맥락이 필요한 조각 코드는 `text`, `bash`, `typescript`, `solidity`, `rust,ignore` 등으로 명확히 분류합니다.
 
+### 현재 코드 예제 검증 상태
+
+현재 문서의 Rust 코드 블록은 다음 기준으로 관리합니다.
+
+- ` ```rust `: `mdbook test`가 실제로 컴파일/실행하는 독립 예제
+- ` ```rust,should_panic `: panic이 정상 결과인 예제
+- ` ```rust,compile_fail `: 컴파일 에러를 설명하기 위한 예제
+- ` ```rust,ignore `: 외부 크레이트, 프로젝트 전체 구조, Anchor/Alloy/Tokio/sqlx 설정, 또는 앞뒤 문맥이 필요한 읽기용 예제
+- ` ```text `: 실행 출력, 디렉토리 트리, 개념도, 축약된 해시/주소 예시
+
+2026-04-14 기준 확인 상태:
+
+- `mdbook build` 통과
+- `mdbook test` 통과
+- `git diff --check` 통과
+- 언어 태그 없는 코드펜스 0개
+- Rust 코드블록 433개 중 150개는 `mdbook test`로 실제 컴파일/실행 검증
+- 나머지 `rust,ignore` 계열은 단독 실행 예제가 아니라 프로젝트 맥락이 필요한 읽기용 코드로 분류
+- 9.1장 3.4 “Rust로 머클 트리 구현” 예제는 별도 임시 Cargo 프로젝트에서 실제 `cargo run --offline` 실행 검증 완료
+
+따라 치기용 실습 코드는 가능한 한 독립 실행 가능한 형태로 유지하고, 단독 실행 대상이 아닌 조각 코드는 본문에서 그 성격을 분명히 표시합니다.
+
 ## 배포 방법
 
 이 프로젝트는 GitHub Actions를 통해 `main` 브랜치에 push할 때 자동으로 GitHub Pages에 배포됩니다.

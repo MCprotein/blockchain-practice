@@ -333,7 +333,13 @@ contract D is B, C {
 ```solidity
 // 인터페이스: 외부 컨트랙트와의 상호작용 표준 정의
 interface IUniswapV2Router {
-    function swapExactTokensForETH(...) external returns (uint[] memory);
+    function swapExactTokensForETH(
+        uint amountIn,
+        uint amountOutMin,
+        address[] calldata path,
+        address to,
+        uint deadline
+    ) external returns (uint[] memory amounts);
 }
 
 // 추상 컨트랙트: 공통 로직을 가진 베이스 컨트랙트

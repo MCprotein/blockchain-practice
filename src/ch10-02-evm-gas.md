@@ -422,7 +422,7 @@ const { ethers } = require("ethers");
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
 
 async function inspectEVMState() {
-  const contractAddress = "0xYourContract...";
+  const contractAddress = "0x0000000000000000000000000000000000001000";
   
   // 1. 스토리지 슬롯 직접 읽기 (저수준)
   const slot0 = await provider.getStorage(contractAddress, 0);

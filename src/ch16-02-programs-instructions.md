@@ -123,7 +123,10 @@ const mintTx = new Transaction()
   )
   .add(
     // 3. NFT 메타데이터 생성 (Metaplex Program)
-    createCreateMetadataAccountV3Instruction(...)
+    createCreateMetadataAccountV3Instruction(
+      { metadata, mint, mintAuthority, payer, updateAuthority },
+      { createMetadataAccountArgsV3: metadataArgs }
+    )
   );
 
 // 만약 3번이 실패하면, 1번과 2번도 롤백됨!

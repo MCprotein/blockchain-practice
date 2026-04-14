@@ -4,7 +4,7 @@
 
 `panic!`은 프로그램이 계속 실행될 수 없는 상황에서 즉시 종료하는 메커니즘입니다. 스택을 풀어내며(unwinding) 정리 코드를 실행하거나, 즉시 중단(abort)합니다.
 
-```rust,ignore
+```rust,should_panic
 fn main() {
     panic!("Something went terribly wrong!");
     // thread 'main' panicked at 'Something went terribly wrong!', src/main.rs:2:5
@@ -15,7 +15,7 @@ fn main() {
 
 ### 1. 명시적 panic! 호출
 
-```rust,ignore
+```rust
 fn divide(a: f64, b: f64) -> f64 {
     if b == 0.0 {
         panic!("Division by zero!");
@@ -26,7 +26,7 @@ fn divide(a: f64, b: f64) -> f64 {
 
 ### 2. 배열/Vec 범위 초과
 
-```rust,ignore
+```rust,should_panic
 fn main() {
     let v = vec![1, 2, 3];
     println!("{}", v[10]);
@@ -36,7 +36,7 @@ fn main() {
 
 ### 3. unwrap()이 None에 호출될 때
 
-```rust,ignore
+```rust,should_panic
 fn main() {
     let value: Option<i32> = None;
     let x = value.unwrap();
@@ -46,7 +46,7 @@ fn main() {
 
 ### 4. expect()
 
-```rust,ignore
+```rust,should_panic
 fn main() {
     let value: Option<i32> = None;
     let x = value.expect("value must exist here");
@@ -66,7 +66,7 @@ fn main() {
 
 ### 6. assert! 매크로
 
-```rust,ignore
+```rust,should_panic
 fn main() {
     let x = 5;
     assert!(x > 10, "x must be greater than 10, got {}", x);
@@ -112,22 +112,41 @@ mod tests {
 }
 ```
 
-**3. 예제/프로토타입 코드 (todo!, unimplemented!)**
+**3. 학습 중 임시 중단 코드**
 
-```rust,ignore
-fn mine_block(&mut self) -> Block {
-    todo!("PoW mining not yet implemented")
-    // thread 'main' panicked at 'not yet implemented: PoW mining not yet implemented'
+`todo!`, `unimplemented!`, `unreachable!`는 실행 가능한 완성 코드가 아니라, 개발 중 일부러 프로그램을 중단시키는 매크로입니다. 최종 예제나 실습 코드에는 남기지 않습니다.
+
+```rust
+#[derive(Debug)]
+struct Block {
+    nonce: u64,
 }
 
-fn verify_signature(&self) -> bool {
-    unimplemented!("Signature verification")
+fn mine_block(difficulty: usize) -> Result<Block, String> {
+    if difficulty > 6 {
+        return Err(String::from("difficulty is too high for this demo"));
+    }
+
+    Ok(Block { nonce: 42 })
 }
 
-fn unused_function() {
-    unreachable!("This code should never be reached");
+fn verify_signature(signature: &[u8]) -> Result<bool, String> {
+    if signature.is_empty() {
+        return Err(String::from("signature is empty"));
+    }
+
+    Ok(true)
+}
+
+fn main() {
+    let block = mine_block(2).expect("mining should succeed in the demo");
+    let verified = verify_signature(&[1, 2, 3]).expect("signature should be present");
+
+    println!("mined block: {:?}, signature verified: {}", block, verified);
 }
 ```
+
+완성 코드에서는 위처럼 실제 구현이나 명시적 에러 반환을 사용합니다.
 
 **4. 외부 입력이 아닌, 프로그래머의 실수로만 발생할 수 있는 상황**
 
@@ -257,7 +276,7 @@ stack backtrace:
 | `unimplemented!()` | 의도적으로 구현하지 않음 | 트레이트 메서드 중 일부만 구현 |
 | `unreachable!()` | 도달할 수 없는 코드 | 로직상 불가능한 분기 |
 
-```rust,ignore
+```rust
 enum Direction { North, South, East, West }
 
 fn turn_left(dir: Direction) -> Direction {

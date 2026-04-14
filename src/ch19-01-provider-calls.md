@@ -367,7 +367,7 @@ Node.js 배경의 개발자를 위한 대응 코드 비교표다.
 import { ethers } from "ethers";
 
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
-const balance = await provider.getBalance("0x742d35...");
+const balance = await provider.getBalance("0x742d35Cc6634C0532925a3b844Bc454e4438f44e");
 console.log(ethers.formatEther(balance)); // "1.5"
 ```
 
@@ -377,7 +377,7 @@ use alloy::providers::{Provider, ProviderBuilder};
 use alloy::primitives::Address;
 
 let provider = ProviderBuilder::new().on_http("http://localhost:8545".parse()?);
-let address: Address = "0x742d35...".parse()?;
+let address: Address = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e".parse()?;
 let balance = provider.get_balance(address).await?;
 // U256로 반환됨, 직접 포맷팅 필요
 ```

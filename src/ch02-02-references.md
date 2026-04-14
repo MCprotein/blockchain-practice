@@ -4,7 +4,7 @@
 
 앞 챕터에서 소유권을 함수에 전달하면 원래 변수를 사용할 수 없게 된다는 걸 봤습니다:
 
-```rust,ignore
+```rust
 fn calculate_length(s: String) -> usize {
     s.len()
 }
@@ -23,7 +23,7 @@ fn main() {
 
 ## 불변 참조 `&T`
 
-```rust,ignore
+```rust
 fn calculate_length(s: &String) -> usize {  // &String: String의 참조를 받음
     s.len()
 }
@@ -59,7 +59,7 @@ fn main() {
 
 ### 참조는 불변이 기본
 
-```rust,ignore
+```rust,compile_fail
 fn try_to_change(s: &String) {
     s.push_str(", world");  // 컴파일 에러!
     // error[E0596]: cannot borrow `*s` as mutable, as it is behind a `&` reference
@@ -72,7 +72,7 @@ fn try_to_change(s: &String) {
 
 ## 가변 참조 `&mut T`
 
-```rust,ignore
+```rust
 fn change(s: &mut String) {
     s.push_str(", world");  // OK! 가변 참조로 변경 가능
 }
@@ -133,7 +133,7 @@ fn main() {
 
 Node.js는 싱글 스레드여서 이 문제를 신경 쓸 필요가 없었습니다. Rust는 멀티스레드 환경을 기본으로 고려합니다.
 
-```rust,ignore
+```rust,compile_fail
 // 해결법 1: 스코프 분리
 fn main() {
     let mut s = String::from("hello");
@@ -161,7 +161,7 @@ fn main() {
 
 ### 규칙 2: 불변 참조와 가변 참조의 공존 불가
 
-```rust,ignore
+```rust,compile_fail
 fn main() {
     let mut s = String::from("hello");
 
@@ -176,7 +176,7 @@ fn main() {
 
 **왜?** 불변 참조를 사용하는 코드는 값이 변경되지 않을 거라고 기대합니다. 가변 참조가 동시에 존재하면 이 기대가 깨집니다.
 
-```rust,ignore
+```rust
 // NLL 덕분에 이건 OK
 fn main() {
     let mut s = String::from("hello");
@@ -206,7 +206,7 @@ fn main() {
 
 Rust의 컴파일러는 댕글링 참조(dangling reference)를 방지합니다:
 
-```rust,ignore
+```rust,compile_fail
 fn dangle() -> &String {  // 컴파일 에러!
     let s = String::from("hello");
     &s  // s의 참조를 반환하려고 시도
@@ -219,7 +219,7 @@ fn dangle() -> &String {  // 컴파일 에러!
 
 **해결책**: 소유권을 반환
 
-```rust,ignore
+```rust
 fn no_dangle() -> String {
     let s = String::from("hello");
     s   // 소유권을 반환 — 메모리가 해제되지 않음
@@ -232,7 +232,7 @@ fn no_dangle() -> String {
 
 ### 패턴 1: 읽기만 할 때 `&T`
 
-```rust,ignore
+```rust
 struct Block {
     index: u64,
     hash: String,
@@ -313,7 +313,7 @@ fn main() {
 
 ### 패턴 3: 여러 필드를 동시에 가변 참조
 
-```rust,ignore
+```rust
 struct Point {
     x: f64,
     y: f64,
@@ -337,7 +337,7 @@ fn main() {
 
 참조를 통해 실제 값에 접근하려면 `*`(역참조)를 씁니다:
 
-```rust,ignore
+```rust
 fn main() {
     let x = 5;
     let r = &x;       // r은 x의 참조
@@ -354,7 +354,7 @@ fn main() {
 
 대부분의 경우 Rust가 자동으로 역참조합니다(deref coercion). `.` 연산자는 자동으로 역참조합니다:
 
-```rust,ignore
+```rust
 fn main() {
     let s = String::from("hello");
     let r = &s;
@@ -369,7 +369,7 @@ fn main() {
 
 ## 함수에서 참조 반환 시 주의사항
 
-```rust,ignore
+```rust
 // OK: 입력 참조의 수명을 그대로 반환
 fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();

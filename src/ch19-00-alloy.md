@@ -117,7 +117,8 @@ use alloy::signers::local::PrivateKeySigner;
 use alloy::signers::Signer;
 
 // 개인키로 서명자 생성
-let signer: PrivateKeySigner = "0xac0974...".parse()?;
+let signer: PrivateKeySigner =
+    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80".parse()?;
 
 // 서명자의 주소 확인
 println!("Address: {}", signer.address());

@@ -74,7 +74,7 @@ fn load_blockchain(path: &str) -> Result<Blockchain, AppError> {
 
 ### From 트레이트 직접 구현
 
-```rust,ignore
+```rust
 use std::io;
 use std::num::ParseIntError;
 

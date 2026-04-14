@@ -4,7 +4,7 @@
 
 트레이트는 타입이 구현해야 하는 동작(메서드)의 집합을 정의합니다. TypeScript의 `interface`와 유사하지만 더 강력합니다.
 
-```rust,ignore
+```rust
 // 트레이트 정의
 trait Hashable {
     // 메서드 시그니처 (구현 필수)
@@ -186,7 +186,7 @@ function hashItem(item: Hashable): string {
 
 ### Display와 Debug
 
-```rust,ignore
+```rust
 use std::fmt;
 
 struct Block {
@@ -220,7 +220,7 @@ fn main() {
 
 ### Clone과 Copy
 
-```rust,ignore
+```rust
 // Clone: 명시적 깊은 복사 (.clone() 호출)
 #[derive(Clone)]
 struct Block {
@@ -249,7 +249,7 @@ fn main() {
 
 ### PartialEq, Eq, PartialOrd, Ord
 
-```rust,ignore
+```rust
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 struct BlockHeight(u64);
 
@@ -317,7 +317,7 @@ fn main() {
 
 ### Iterator 트레이트 (6.3장에서 자세히)
 
-```rust,ignore
+```rust
 struct CountingIterator {
     current: u64,
     max: u64,

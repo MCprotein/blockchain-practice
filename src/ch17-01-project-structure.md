@@ -314,7 +314,7 @@ pub fn add_score(ctx: Context<AddScore>, points: u64) -> Result<()> {
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 // 이 매크로가 하는 일:
-// 1. ID 상수 생성: pub const ID: Pubkey = ...
+// 1. ID 상수 생성: pub const ID: Pubkey = Pubkey::new_from_array([...])
 // 2. check_id() 함수 생성: 프로그램 ID 검증용
 // 3. 런타임이 올바른 프로그램을 호출했는지 검증
 

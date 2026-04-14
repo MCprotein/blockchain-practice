@@ -31,7 +31,7 @@ println!("{}", multiply_by(5));  // 15
 
 ## 클로저 문법
 
-```rust,ignore
+```rust
 fn main() {
     // 기본 형태: |매개변수| 표현식
     let add = |x, y| x + y;
@@ -59,7 +59,7 @@ fn main() {
 
 Rust는 사용 방법에서 클로저의 타입을 추론합니다:
 
-```rust,ignore
+```rust
 fn main() {
     let add = |x, y| x + y;  // 타입 아직 미결정
 
@@ -80,7 +80,7 @@ fn main() {
 
 ### 1. 불변 참조로 캡처 (기본)
 
-```rust,ignore
+```rust
 fn main() {
     let x = 5;
     let print_x = || println!("x = {}", x);  // &x 캡처
@@ -92,7 +92,7 @@ fn main() {
 
 ### 2. 가변 참조로 캡처
 
-```rust,ignore
+```rust
 fn main() {
     let mut count = 0;
     let mut increment = || {
@@ -108,7 +108,7 @@ fn main() {
 
 ### 3. 소유권 이동 (move)
 
-```rust,ignore
+```rust
 fn main() {
     let data = vec![1, 2, 3];
 
@@ -138,7 +138,7 @@ fn main() {
 
 ### FnOnce: 소유권을 이동하는 클로저
 
-```rust,ignore
+```rust
 fn call_once<F: FnOnce()>(f: F) {
     f();  // 한 번만 호출 가능
     // f();  // 에러! f는 소비됨
@@ -158,7 +158,7 @@ fn main() {
 
 ### FnMut: 가변 참조를 캡처하는 클로저
 
-```rust,ignore
+```rust
 fn call_multiple_times<F: FnMut()>(mut f: F) {
     f();
     f();
@@ -180,7 +180,7 @@ fn main() {
 
 ### Fn: 불변 참조만 캡처하는 클로저
 
-```rust,ignore
+```rust
 fn apply_twice<F: Fn(i32) -> i32>(f: F, x: i32) -> i32 {
     f(f(x))
 }
@@ -206,7 +206,7 @@ FnOnce  ←  FnMut  ←  Fn
 - 함수 인자에 `FnOnce`를 요구하면 가장 유연함 (모든 클로저 받을 수 있음)
 - `Fn`을 요구하면 가장 제한적 (불변 캡처만 가능)
 
-```rust,ignore
+```rust
 // 가장 유연: FnOnce (어떤 클로저든 받음)
 fn run_once<F: FnOnce() -> String>(f: F) -> String { f() }
 
@@ -221,7 +221,7 @@ fn run_shared<F: Fn() -> String>(f: F) { println!("{}", f()); println!("{}", f()
 
 ## 일반 함수도 클로저 트레이트를 구현함
 
-```rust,ignore
+```rust
 fn double(x: i32) -> i32 { x * 2 }
 
 fn apply<F: Fn(i32) -> i32>(f: F, x: i32) -> i32 {
@@ -239,7 +239,7 @@ fn main() {
 
 ## 클로저를 반환하는 함수
 
-```rust,ignore
+```rust
 // 클로저 반환 — impl Fn 사용
 fn make_adder(x: i32) -> impl Fn(i32) -> i32 {
     move |y| x + y  // x를 캡처해서 반환
@@ -266,7 +266,7 @@ fn main() {
 
 여러 다른 클로저 타입을 반환해야 할 때는 `Box<dyn Fn>`:
 
-```rust,ignore
+```rust
 fn make_validator(min: u64, max: u64) -> Box<dyn Fn(u64) -> bool> {
     Box::new(move |value| value >= min && value <= max)
 }
@@ -282,7 +282,7 @@ fn main() {
 
 ## 블록체인에서 클로저 활용
 
-```rust,ignore
+```rust
 struct Transaction {
     from: String,
     to: String,

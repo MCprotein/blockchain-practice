@@ -48,7 +48,7 @@ class Block implements Hashable {
 }
 ```
 
-```rust,ignore
+```rust
 // Rust trait
 trait Hashable {
     fn compute_hash(&self) -> String;

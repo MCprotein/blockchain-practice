@@ -4,7 +4,7 @@
 
 `match`는 Rust에서 가장 강력한 제어 흐름 구조입니다. TypeScript의 `switch`와 유사하지만 훨씬 강력합니다.
 
-```rust,ignore
+```rust
 enum Coin {
     Penny,
     Nickel,
@@ -55,7 +55,7 @@ fn value_in_cents(coin: &Coin) -> u32 {
 
 각 `match` 팔은 `패턴 => 표현식` 형태입니다:
 
-```rust,ignore
+```rust
 fn describe_number(n: i32) -> &'static str {
     match n {
         // 단일 값
@@ -109,7 +109,7 @@ fn process_block(block: &Block) -> String {
 
 ## 데이터를 가진 열거형 패턴 매칭
 
-```rust,ignore
+```rust
 #[derive(Debug)]
 enum Message {
     Quit,
@@ -153,7 +153,7 @@ fn main() {
 
 ### 구조체 구조 분해
 
-```rust,ignore
+```rust
 struct Point {
     x: f64,
     y: f64,
@@ -193,7 +193,7 @@ fn main() {
 
 ### 튜플 구조 분해
 
-```rust,ignore
+```rust
 fn main() {
     let (a, b, c) = (1, 2, 3);
     println!("{} {} {}", a, b, c);
@@ -210,7 +210,7 @@ fn main() {
 
 ### 열거형 구조 분해
 
-```rust,ignore
+```rust
 #[derive(Debug)]
 enum TransactionResult {
     Success { txid: String, block_height: u64 },
@@ -237,7 +237,7 @@ fn handle_result(result: TransactionResult) {
 
 ## 와일드카드와 변수 바인딩
 
-```rust,ignore
+```rust
 fn main() {
     let num = 7u32;
 
@@ -287,7 +287,7 @@ fn categorize_block_height(height: u64) -> String {
 
 패턴에 추가 조건을 붙일 수 있습니다:
 
-```rust,ignore
+```rust
 fn classify_transaction(amount: u64, is_confirmed: bool) -> &'static str {
     match (amount, is_confirmed) {
         (0, _) => "zero-value transaction",
@@ -397,7 +397,7 @@ fn main() {
 
 패턴이 매칭되지 않으면 early return하는 패턴:
 
-```rust,ignore
+```rust
 fn process_transaction(tx_data: &str) -> Result<(), String> {
     // tx_data를 파싱
     let parts: Vec<&str> = tx_data.split(':').collect();
@@ -434,7 +434,7 @@ fn main() {
 
 bool을 반환하는 패턴 매칭 단축형:
 
-```rust,ignore
+```rust
 #[derive(PartialEq)]
 enum Status { Active, Inactive, Suspended }
 

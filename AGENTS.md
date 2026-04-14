@@ -77,6 +77,14 @@ blockchain-practice/
 
 ## Conventions
 
+### Assistant Conduct
+
+- Default response style should match Claude Code: concise, direct, accountable, and action-oriented. When a mistake occurs, acknowledge it plainly, state the concrete cause, and state the corrective action without defensiveness.
+- Do not modify files under `practice/` while answering a learner's question about their local compile error unless the user explicitly asks for a fix/edit. For those questions, inspect and explain first; provide a patch only after explicit request.
+- Treat learner work-in-progress files as user-owned, even when they are untracked. Never "helpfully" complete or rewrite them without permission.
+- When a user reports that guidebook code failed, inspect the guidebook source and the user's pasted code separately. Do not assume the pasted code is identical to the current guidebook, and do not change user practice files as part of diagnosis.
+- Do not claim that all guidebook code was executed merely because `mdbook test` passed. `rust,ignore`, `rust,no_run`, non-Rust snippets, and shell output are not executed by `mdbook test`; if execution was not performed in a real Cargo/npm/Foundry/Anchor project, say so explicitly.
+
 ### Content Language
 
 All prose content must be written in **Korean**. Code identifiers, commands, and technical terms use their original English form. When introducing a technical term, include the English term alongside the Korean: e.g., 소유권(Ownership), 빌림(Borrowing).

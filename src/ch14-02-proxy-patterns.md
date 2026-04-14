@@ -37,7 +37,7 @@ contract Logic {
 
 contract Caller {
     uint256 public value;
-    Logic logic = Logic(0x...);
+    Logic logic = Logic(0x0000000000000000000000000000000000001000);
 
     function useCall() public {
         // call: Logic 컨트랙트의 context에서 실행

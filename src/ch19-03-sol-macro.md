@@ -56,7 +56,16 @@ sol! {
 `sol!` 매크로는 다음 Rust 타입들을 자동 생성한다:
 
 ```rust,ignore
-// sol! { contract Counter { ... } } 가 생성하는 것들:
+sol! {
+    contract Counter {
+        function increment() external;
+        function getCount() external view returns (uint256);
+        function reset(uint256 value) external;
+        event Incremented(address indexed by, uint256 newCount);
+    }
+}
+
+// 위 sol! 매크로가 생성하는 것들:
 
 // 1. 함수 호출 타입 (각 함수마다)
 Counter::incrementCall  // 인자 없음
@@ -232,7 +241,7 @@ abi-dir = "abi/"
 # 또는 build.rs 작성
 ```
 
-```rust,ignore
+```rust
 // build.rs
 fn main() {
     // ABI 파일이 바뀌면 재컴파일

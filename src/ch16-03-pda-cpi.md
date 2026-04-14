@@ -79,8 +79,8 @@ assert_eq!(pda, pda_verify);
 // TypeScript에서 PDA 찾기
 import { PublicKey } from '@solana/web3.js';
 
-const PROGRAM_ID = new PublicKey("MyProg111...");
-const userPubkey = new PublicKey("User111...");
+const PROGRAM_ID = new PublicKey("11111111111111111111111111111111");
+const userPubkey = new PublicKey("So11111111111111111111111111111111111111112");
 
 // seeds는 Buffer 또는 Uint8Array 배열
 const [pda, bump] = PublicKey.findProgramAddressSync(

@@ -5,8 +5,10 @@
 Solidity 함수의 전체 문법 구조:
 
 ```solidity
-function 함수명(파라미터타입 파라미터명, ...) 가시성 상태변경성 returns (반환타입) {
-    // 함수 본문
+function transfer(address to, uint256 amount) public returns (bool) {
+    balances[msg.sender] -= amount;
+    balances[to] += amount;
+    return true;
 }
 ```
 

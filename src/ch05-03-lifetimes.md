@@ -6,7 +6,7 @@
 
 ### 문제: 댕글링 참조
 
-```rust,ignore
+```rust,compile_fail
 fn main() {
     let r;
     {
@@ -38,7 +38,7 @@ error[E0597]: `x` does not live long enough
 
 두 참조를 받아 하나를 반환하는 함수에서 수명이 필요합니다:
 
-```rust,ignore
+```rust,compile_fail
 // 컴파일 에러 — 반환하는 참조의 수명을 알 수 없음
 fn longest(x: &str, y: &str) -> &str {
     if x.len() > y.len() { x } else { y }
@@ -50,7 +50,7 @@ fn longest(x: &str, y: &str) -> &str {
 
 컴파일러는 반환되는 `&str`이 `x`의 수명인지 `y`의 수명인지 알 수 없습니다. 수명 어노테이션으로 알려줍니다:
 
-```rust,ignore
+```rust
 // 수명 어노테이션 추가
 fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() { x } else { y }
@@ -134,7 +134,7 @@ fn main() {
 
 **실용적인 조언**: 구조체 필드로 참조 대신 `String`, `Vec<T>` 등 소유된 타입을 사용하면 수명 어노테이션이 필요 없습니다. 성능이 매우 중요한 경우가 아니면 소유된 타입을 선호합니다:
 
-```rust,ignore
+```rust
 // 수명 어노테이션 없음 — 소유된 데이터
 struct Block {
     hash: String,   // String 소유 (힙에 할당)
@@ -199,7 +199,7 @@ impl Block {
 
 ### 상황 1: 두 참조 중 하나를 반환
 
-```rust,ignore
+```rust
 // 수명 어노테이션 필요
 fn longest_prefix<'a>(s: &'a str, prefix: &'a str) -> &'a str {
     if s.starts_with(prefix) { prefix } else { s }
@@ -208,7 +208,7 @@ fn longest_prefix<'a>(s: &'a str, prefix: &'a str) -> &'a str {
 
 ### 상황 2: 구조체가 참조를 포함할 때
 
-```rust,ignore
+```rust
 struct Parser<'a> {
     input: &'a str,
     position: usize,
@@ -238,7 +238,7 @@ fn main() {
 
 ### 상황 3: 입력과 출력 수명이 다를 때
 
-```rust,ignore
+```rust
 fn get_prefix<'a, 'b>(s: &'a str, _separator: &'b str) -> &'a str {
     // _separator의 수명은 반환값과 무관
     // 반환값의 수명은 s에만 묶임
@@ -280,7 +280,7 @@ fn may_fail() -> Result<(), Box<dyn std::error::Error + 'static>> {
 
 **가장 실용적인 해결책**: 소유된 데이터를 사용하세요.
 
-```rust,ignore
+```rust
 // 수명 문제를 만날 때의 선택지:
 
 // 1. 소유된 타입 사용 (가장 간단)

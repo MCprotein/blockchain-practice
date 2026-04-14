@@ -26,6 +26,20 @@ mdbook test
 
 빌드 결과물 `book/`은 `.gitignore`에 등록되어 있으므로 커밋하지 않습니다.
 
+## 현재 검증 상태
+
+2026-04-14 기준:
+
+- `mdbook build` 통과
+- `mdbook test` 통과
+- `git diff --check` 통과
+- 언어 태그 없는 코드펜스 0개
+- Rust 코드블록 433개 중 150개는 `mdbook test`로 실제 컴파일/실행 검증
+- `rust,ignore` 계열은 외부 크레이트, 프로젝트 전체 구조, Anchor/Alloy/Tokio/sqlx 설정, 또는 앞뒤 문맥이 필요한 읽기용 예제로 분류
+- 9.1장 3.4 “Rust로 머클 트리 구현” 예제는 별도 임시 Cargo 프로젝트에서 실제 `cargo run --offline` 실행 검증 완료
+
+주의: `mdbook test` 통과를 “모든 코드블록을 실제 실행했다”는 의미로 보고하지 않습니다. `rust,ignore`, 비-Rust 코드, 출력 예시는 실행 대상이 아닙니다.
+
 ## 파일 구조
 
 ```

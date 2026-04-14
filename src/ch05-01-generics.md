@@ -4,7 +4,7 @@
 
 같은 로직인데 타입만 다른 코드를 반복 작성하는 것은 나쁜 설계입니다:
 
-```rust,ignore
+```rust
 // 반복 코드 — 나쁜 패턴
 fn largest_i32(list: &[i32]) -> &i32 {
     let mut largest = &list[0];
@@ -29,7 +29,7 @@ fn largest_f64(list: &[f64]) -> &f64 {
 
 제네릭으로 하나로 합칩니다:
 
-```rust,ignore
+```rust
 // 제네릭 함수 — 좋은 패턴
 fn largest<T: PartialOrd>(list: &[T]) -> &T {
     let mut largest = &list[0];
@@ -56,7 +56,7 @@ fn main() {
 
 ## 함수의 제네릭
 
-```rust,ignore
+```rust
 // 단일 타입 매개변수
 fn identity<T>(value: T) -> T {
     value
@@ -103,7 +103,7 @@ function zipFirst<T, U>(a: T[], b: U[]): [T, U][] {
 
 ## 구조체의 제네릭
 
-```rust,ignore
+```rust
 // 단일 타입 매개변수
 #[derive(Debug)]
 struct Wrapper<T> {
@@ -144,7 +144,7 @@ fn main() {
 
 ### 여러 타입 매개변수를 가진 구조체
 
-```rust,ignore
+```rust
 #[derive(Debug)]
 struct KeyValue<K, V> {
     key: K,
@@ -241,7 +241,7 @@ fn current_timestamp() -> u64 {
 
 이미 `Option<T>`와 `Result<T, E>`에서 봤습니다. 직접 만들어봅시다:
 
-```rust,ignore
+```rust
 // 이진 트리 (블록체인 Merkle Tree의 기초)
 #[derive(Debug)]
 enum Tree<T> {
@@ -329,20 +329,21 @@ function identity<T>(x: T): T { return x; }
 
 ## 타입 매개변수 기본값 (Rust 1.0+)
 
-```rust,ignore
+```rust
 // HashMap은 기본 해셔를 가짐
-// pub struct HashMap<K, V, S = RandomState> { ... }
-
 use std::collections::HashMap;
-
-let map: HashMap<String, u64> = HashMap::new();
-// S = RandomState (기본값)
-
-// 커스텀 해셔 사용
 use std::collections::hash_map::DefaultHasher;
 use std::hash::BuildHasherDefault;
-let custom_map: HashMap<String, u64, BuildHasherDefault<DefaultHasher>> =
-    HashMap::with_hasher(BuildHasherDefault::default());
+
+fn main() {
+    let map: HashMap<String, u64> = HashMap::new();
+    println!("기본 해셔 HashMap 길이: {}", map.len());
+
+    // 커스텀 해셔 사용
+    let custom_map: HashMap<String, u64, BuildHasherDefault<DefaultHasher>> =
+        HashMap::with_hasher(BuildHasherDefault::default());
+    println!("커스텀 해셔 HashMap 길이: {}", custom_map.len());
+}
 ```
 
 ---
@@ -351,7 +352,7 @@ let custom_map: HashMap<String, u64, BuildHasherDefault<DefaultHasher>> =
 
 Rust의 타입 추론이 강력하기 때문에 대부분의 경우 타입을 명시하지 않아도 됩니다:
 
-```rust,ignore
+```rust
 fn main() {
     // 타입 추론으로 명시 불필요
     let v = vec![1, 2, 3];          // Vec<i32>

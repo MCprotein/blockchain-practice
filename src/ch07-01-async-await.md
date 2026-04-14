@@ -4,7 +4,7 @@
 
 `async fn`으로 정의한 함수는 `Future`를 반환합니다:
 
-```rust,ignore
+```rust
 // 동기 함수
 fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
@@ -28,7 +28,7 @@ async function greetAsync(name: string): Promise<string> {
 }
 ```
 
-```rust,ignore
+```rust
 // Rust: async fn은 Future를 반환 (Future ≈ Promise)
 async fn greet_async(name: &str) -> String {
     format!("Hello, {}!", name)

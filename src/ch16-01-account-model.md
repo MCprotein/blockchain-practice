@@ -79,7 +79,7 @@ Mint Account:        data = [mint_authority(36), supply(8), decimals(1), ...] (8
 
 ### executable (실행 가능 여부)
 
-```rust,ignore
+```rust
 // executable = true → 프로그램 Account (스마트 컨트랙트)
 // executable = false → 데이터 Account (일반 계정)
 

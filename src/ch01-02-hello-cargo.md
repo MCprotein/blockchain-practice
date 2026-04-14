@@ -380,7 +380,7 @@ pub fn sha256(input: &str) -> String {
 }
 ```
 
-```rust,ignore
+```rust
 // src/models.rs
 pub struct Block {
     pub index: u64,

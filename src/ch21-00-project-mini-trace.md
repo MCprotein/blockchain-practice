@@ -866,7 +866,7 @@ async fn health_check() -> Json<serde_json::Value> {
 }
 
 /// POST /events
-/// Body: { "event_type": "harvest", "payload": { ... } }
+/// Body: { "event_type": "harvest", "payload": { "lot_id": "LOT-2026-001" } }
 async fn create_event(
     State(service): State<AppState>,
     Json(req): Json<CreateEventRequest>,

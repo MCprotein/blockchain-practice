@@ -271,7 +271,7 @@ const ERC20_ABI = [
 ];
 
 // 컨트랙트 인스턴스 생성 (ABI + 주소)
-const tokenAddress = "0xYourToken...";
+const tokenAddress = "0x0000000000000000000000000000000000001000";
 const token = new ethers.Contract(tokenAddress, ERC20_ABI, wallet);
 
 async function interactWithToken() {
@@ -290,7 +290,7 @@ async function interactWithToken() {
   console.log(`내 잔액: ${ethers.formatUnits(myBalance, decimals)} ${symbol}`);
   
   // 3. 토큰 전송 (쓰기 함수, 가스 필요)
-  const recipient = "0xRecipient...";
+  const recipient = "0x0000000000000000000000000000000000002000";
   const amount = ethers.parseUnits("100", decimals); // 100 토큰
   
   const tx = await token.transfer(recipient, amount);

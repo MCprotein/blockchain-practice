@@ -54,7 +54,7 @@ console.log(m);
 
 **3. 소유권 시스템 (Rust)**
 
-```rust,ignore
+```rust
 // Rust 코드
 fn create_message() -> String {
     let msg = String::from("Hello");  // 힙에 할당
@@ -151,7 +151,7 @@ Rust에서는 값이 스코프를 벗어날 때 자동으로 `drop`이 호출됩
 
 ### 스코프와 자동 해제
 
-```rust,ignore
+```rust
 fn main() {
     // s는 이 시점에서 아직 존재하지 않음
     {

@@ -282,7 +282,7 @@ cd hello-blockchain
 
 ### src/main.rs 살펴보기
 
-```rust,ignore
+```rust
 fn main() {
     println!("Hello, world!");
 }
@@ -357,7 +357,7 @@ Block #100: reward = 6.25 BTC
 
 ### println! 포맷 문자열
 
-```rust,ignore
+```rust
 fn main() {
     let x = 42;
     let pi = 3.14159;
@@ -392,7 +392,7 @@ fn main() {
 
 ### eprintln!: stderr 출력
 
-```rust,ignore
+```rust
 fn main() {
     println!("이건 stdout으로");   // 정상 출력
     eprintln!("이건 stderr로");    // 에러/로그 출력

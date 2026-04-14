@@ -4,14 +4,14 @@
 
 Rust의 이터레이터는 `Iterator` 트레이트를 구현합니다:
 
-```rust,ignore
+```rust
 pub trait Iterator {
     type Item;  // 순회할 원소 타입
 
     fn next(&mut self) -> Option<Self::Item>;  // 유일하게 구현 필수인 메서드
 
-    // 나머지 수백 개의 메서드는 기본 구현이 있음
-    // map, filter, collect, fold, take, skip, ...
+    // 나머지 수백 개의 메서드는 기본 구현이 있음:
+    // map, filter, collect, fold, take, skip 등
 }
 ```
 
@@ -21,7 +21,7 @@ pub trait Iterator {
 
 ## 이터레이터 생성
 
-```rust,ignore
+```rust
 fn main() {
     let v = vec![1, 2, 3, 4, 5];
 
@@ -65,7 +65,7 @@ fn main() {
 
 ### map: 변환
 
-```rust,ignore
+```rust
 fn main() {
     let v = vec![1, 2, 3, 4, 5];
 
@@ -91,7 +91,7 @@ fn compute_hash(data: &str) -> String {
 
 ### filter: 조건 필터링
 
-```rust,ignore
+```rust
 fn main() {
     let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -119,7 +119,7 @@ fn main() {
 
 ### map + filter 체이닝
 
-```rust,ignore
+```rust
 fn main() {
     let data = vec!["42", "abc", "100", "def", "7"];
 
@@ -172,13 +172,13 @@ fn main() {
 
     let strings2 = vec!["1", "abc", "3"];
     let numbers2: Result<Vec<u32>, _> = strings2.iter().map(|s| s.parse::<u32>()).collect();
-    println!("{:?}", numbers2);  // Err(ParseIntError { ... })
+    println!("파싱 실패 여부: {}", numbers2.is_err());
 }
 ```
 
 ### fold와 reduce: 누적
 
-```rust,ignore
+```rust
 fn main() {
     let numbers = vec![1, 2, 3, 4, 5];
 
@@ -210,7 +210,7 @@ fn main() {
 
 ### take, skip, enumerate, zip
 
-```rust,ignore
+```rust
 fn main() {
     let numbers: Vec<i32> = (1..=10).collect();
 
@@ -256,7 +256,7 @@ fn main() {
 
 ### any, all, find, position
 
-```rust,ignore
+```rust
 fn main() {
     let numbers = vec![1, 2, 3, 4, 5];
 
@@ -288,7 +288,7 @@ fn main() {
 
 이터레이터 어댑터는 지연 평가됩니다. `collect()` 같은 소비 메서드가 호출될 때까지 실행되지 않습니다:
 
-```rust,ignore
+```rust
 fn main() {
     let v = vec![1, 2, 3, 4, 5];
 
@@ -318,7 +318,7 @@ fn main() {
 
 **장점**: 불필요한 중간 컬렉션을 만들지 않아 메모리 효율적입니다.
 
-```rust,ignore
+```rust
 // take(3)이 있으면 세 개 찾은 후 중단 (나머지는 실행 안 됨)
 let first_three_even: Vec<i32> = (0..)  // 무한 이터레이터!
     .filter(|x| x % 2 == 0)
@@ -331,7 +331,7 @@ println!("{:?}", first_three_even);  // [0, 2, 4]
 
 ## 커스텀 이터레이터 구현
 
-```rust,ignore
+```rust
 struct BlockHeightRange {
     current: u64,
     end: u64,

@@ -21,7 +21,7 @@ Rust의 표준 라이브러리는 여러 컬렉션 타입을 제공합니다. No
 
 ### 컬렉션과 소유권
 
-```rust,ignore
+```rust
 fn main() {
     let v = vec![1, 2, 3];
 

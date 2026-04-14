@@ -22,7 +22,9 @@ apps/iksan-api/src/main.rs
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // 로깅: 어떤 레벨과 필터를 사용하는가
-    tracing_subscriber::...
+    tracing_subscriber::fmt()
+        .with_env_filter("info")
+        .init();
     
     // 설정: 어떤 환경변수가 필요한가
     let config = Config::from_env()?;
@@ -133,18 +135,41 @@ let app = router
 ### apps/iksan-api/src/core/app.rs
 
 ```rust,ignore
-// 주목 1: Arc 사용 패턴
-// 무거운 객체(DB 풀, HTTP 클라이언트)는 Arc로 감싸 참조 공유
-pub blockchain: Arc<BlockchainService>,
+use std::sync::Arc;
 
+pub struct BlockchainService;
+pub struct EventService;
+pub struct DbPool;
+
+impl BlockchainService {
+    pub async fn new() -> anyhow::Result<Self> {
+        Ok(Self)
+    }
+}
+
+impl EventService {
+    pub fn new(db: Arc<DbPool>, blockchain: Arc<BlockchainService>) -> Self {
+        let _ = (db, blockchain);
+        Self
+    }
+}
+
+// 주목 1: 무거운 객체(DB 풀, HTTP 클라이언트)는 Arc로 감싸 참조 공유
 // 주목 2: Clone은 Arc 참조만 복사
-#[derive(Clone)]  // 실제 데이터 복사 없음
-pub struct AppState { ... }
+#[derive(Clone)]
+pub struct AppState {
+    pub blockchain: Arc<BlockchainService>,
+    pub event_service: Arc<EventService>,
+}
 
 // 주목 3: 의존성 순서
 // blockchain → event_service (blockchain을 주입받음)
-let blockchain = Arc::new(BlockchainService::new(...).await?);
-let event_service = Arc::new(EventService::new(db.clone(), Arc::clone(&blockchain)));
+async fn build_state(db: Arc<DbPool>) -> anyhow::Result<AppState> {
+    let blockchain = Arc::new(BlockchainService::new().await?);
+    let event_service = Arc::new(EventService::new(db, Arc::clone(&blockchain)));
+
+    Ok(AppState { blockchain, event_service })
+}
 ```
 
 ### apps/iksan-api/src/services/blockchain.rs
@@ -153,7 +178,10 @@ let event_service = Arc::new(EventService::new(db.clone(), Arc::clone(&blockchai
 // 주목 1: sol! 매크로의 #[sol(rpc)] 속성
 sol! {
     #[sol(rpc)]  // 이게 있어야 .call(), .send() 가능
-    contract TraceRecord { ... }
+    contract TraceRecord {
+        function recordHash(bytes32 dataHash) external;
+        function getRecord(bytes32 dataHash) external view returns (address recorder, uint256 timestamp);
+    }
 }
 
 // 주목 2: 타입 변환
@@ -185,16 +213,22 @@ let sorted: BTreeMap<_, _> = payload.as_object()
     .collect();
 
 // 주목 2: 에러 전파 패턴
-let event = sqlx::query_as!(...)
+let event = sqlx::query_as!(
+        TraceEvent,
+        "SELECT id, payload, data_hash FROM trace_events WHERE id = $1",
+        event_id
+    )
     .fetch_one(&mut *tx)  // 트랜잭션 내에서 실행
     .await
     .map_err(AppError::Database)?;  // sqlx::Error → AppError
 
 // 주목 3: match로 블록체인 실패 처리
-match blockchain.record_hash(...).await {
-    Ok(receipt) => { /* 성공 처리 */ }
+match blockchain.record_hash(event.data_hash).await {
+    Ok(receipt) => {
+        tracing::info!(tx_hash = %receipt.tx_hash, "온체인 기록 성공");
+    }
     Err(e) => {
-        tracing::warn!(...);
+        tracing::warn!(error = %e, "온체인 기록 실패");
         // API는 성공, 블록체인만 나중에 재시도
     }
 }
@@ -230,7 +264,14 @@ event HashRecorded(
 ```rust,ignore
 // 주목 1: 외부 프로세스 실행
 let output = tokio::process::Command::new("forge")
-    .args(["create", "--rpc-url", rpc_url, ...])
+    .args([
+        "create",
+        "--rpc-url",
+        rpc_url,
+        "--private-key",
+        deployer_private_key,
+        "contracts/TraceRecord.sol:TraceRecord",
+    ])
     .output()
     .await?;
 
@@ -368,8 +409,8 @@ sol! {
     #[sol(rpc)]
     contract TraceRecord {
         // 기존
-        function recordHash(...) external;
-        function getRecord(...) external view returns (Record memory);
+        function recordHash(bytes32 dataHash) external;
+        function getRecord(bytes32 dataHash) external view returns (Record memory);
         
         // 새로 추가
         function batchRecordHashes(

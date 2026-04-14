@@ -4,7 +4,7 @@
 
 구조체는 관련된 데이터를 하나로 묶는 타입입니다.
 
-```rust,ignore
+```rust
 // 기본 구조체 정의
 struct Block {
     index: u64,
@@ -171,7 +171,7 @@ const block2 = { ...block1, index: 1, data: "Second Block" };
 
 이름 없는 필드를 가진 구조체입니다:
 
-```rust,ignore
+```rust
 // 튜플 구조체 정의
 struct Color(u8, u8, u8);      // RGB
 struct Point(f64, f64, f64);   // 3D 좌표
@@ -191,7 +191,7 @@ fn main() {
 
 **Newtype 패턴**: 타입 안전성을 위해 기본 타입을 감싸는 관용구입니다:
 
-```rust,ignore
+```rust
 struct BlockHeight(u64);
 struct TransactionId(String);
 struct Wei(u128);  // Ethereum 최소 단위
@@ -215,7 +215,7 @@ fn main() {
 
 필드가 없는 구조체입니다. 트레이트를 구현하기 위한 타입으로 자주 사용됩니다:
 
-```rust,ignore
+```rust
 struct AlwaysEqual;  // 필드 없음
 
 // 트레이트 구현 시 유용
@@ -452,7 +452,7 @@ impl Block {
 
 구조체를 `println!`으로 출력하려면 트레이트를 구현해야 합니다:
 
-```rust,ignore
+```rust
 // derive 매크로로 자동 구현 (간단하지만 포맷이 고정)
 #[derive(Debug)]
 struct Block {
@@ -484,7 +484,7 @@ fn main() {
 
 커스텀 출력 형식을 원하면 `Display` 트레이트를 직접 구현합니다:
 
-```rust,ignore
+```rust
 use std::fmt;
 
 struct Block {

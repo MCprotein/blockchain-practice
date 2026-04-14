@@ -36,7 +36,7 @@ fn main() {
 
 `Arc`는 Atomically Reference Counted — 스레드 안전한 참조 카운팅 스마트 포인터입니다.
 
-```rust,ignore
+```rust
 use std::sync::Arc;
 use std::thread;
 
@@ -76,7 +76,7 @@ fn main() {
 
 `Mutex`(Mutual Exclusion)는 한 번에 하나의 스레드만 접근할 수 있도록 잠금을 제공합니다.
 
-```rust,ignore
+```rust
 use std::sync::{Arc, Mutex};
 use std::thread;
 
@@ -105,7 +105,7 @@ fn main() {
 
 ### Mutex의 잠금 획득과 해제
 
-```rust,ignore
+```rust
 use std::sync::Mutex;
 
 fn main() {
@@ -124,7 +124,7 @@ fn main() {
         println!("Got lock: {}", *guard);
     } else {
         println!("Lock is held by another thread");
-    }
+    };
 }
 ```
 
@@ -176,7 +176,7 @@ fn safe_locking() {
 
 `Mutex`는 읽기도 독점합니다. 읽기 작업이 많고 쓰기가 드문 경우 `RwLock`이 효율적입니다.
 
-```rust,ignore
+```rust
 use std::sync::{Arc, RwLock};
 use std::thread;
 
