@@ -199,13 +199,16 @@ Workflow file: `.github/workflows/deploy.yml`
 
 - **Trigger**: push to `main` branch, or manual `workflow_dispatch`
 - **Runner**: `ubuntu-latest`
-- **Node runtime**: workflow sets `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to opt GitHub JavaScript actions into Node.js 24 and avoid Node.js 20 deprecation drift
+- **Node runtime**: workflow uses `actions/setup-node@v6.3.0` with `node-version: '24'`
+- **Action versions**: `actions/checkout@v6.0.2`, `actions/upload-pages-artifact@v5.0.0`, `actions/deploy-pages@v5.0.0`
+- **mdBook install**: installed with `cargo install mdbook --locked`; do not reintroduce `peaceiris/actions-mdbook@v2` because its latest release still targets Node.js 20
 - **Steps**:
-  1. `actions/checkout@v4`
-  2. Install mdBook via `peaceiris/actions-mdbook@v2` (latest version)
-  3. `mdbook build`
-  4. Upload artifact with `actions/upload-pages-artifact@v3` (path: `./book`)
-  5. Deploy with `actions/deploy-pages@v4`
+  1. `actions/checkout@v6.0.2`
+  2. `actions/setup-node@v6.3.0` with Node.js 24
+  3. Install mdBook via `cargo install mdbook --locked`
+  4. `mdbook build`
+  5. Upload artifact with `actions/upload-pages-artifact@v5.0.0` (path: `./book`)
+  6. Deploy with `actions/deploy-pages@v5.0.0`
 - **Permissions**: `contents: read`, `pages: write`, `id-token: write`
 - **Concurrency**: `group: pages`, `cancel-in-progress: false`
 
