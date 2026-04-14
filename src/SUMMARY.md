@@ -4,54 +4,41 @@
 
 ---
 
-# Part 1: Rust 기초
+# 1주차: Rust 기초 + 블록체인 첫걸음
 
 - [Rust 시작하기](./ch01-00-getting-started.md)
   - [설치와 환경 구성](./ch01-01-installation.md)
   - [Hello, Cargo!](./ch01-02-hello-cargo.md)
+- [블록체인이란 무엇인가](./ch09-00-what-is-blockchain.md)
+  - [해시 함수와 암호학 기초](./ch09-01-hash-cryptography.md)
 - [소유권과 빌림](./ch02-00-ownership.md)
   - [소유권 규칙](./ch02-01-ownership-rules.md)
   - [참조와 빌림](./ch02-02-references.md)
   - [슬라이스](./ch02-03-slices.md)
+- [블록과 체인 구조](./ch09-02-blocks-and-chain.md)
 - [구조체, 열거형, 패턴 매칭](./ch03-00-structs-enums.md)
   - [구조체 정의와 사용](./ch03-01-structs.md)
   - [열거형과 Option](./ch03-02-enums.md)
   - [match와 패턴 매칭](./ch03-03-pattern-matching.md)
-- [에러 처리](./ch04-00-error-handling.md)
-  - [panic!과 복구 불가능한 에러](./ch04-01-panic.md)
-  - [Result와 복구 가능한 에러](./ch04-02-result.md)
-  - [에러 전파와 ? 연산자](./ch04-03-propagation.md)
-- [트레이트와 제네릭](./ch05-00-traits-generics.md)
-  - [제네릭 타입](./ch05-01-generics.md)
-  - [트레이트 정의와 구현](./ch05-02-traits.md)
-  - [수명(Lifetime)](./ch05-03-lifetimes.md)
-- [컬렉션과 이터레이터](./ch06-00-collections.md)
-  - [Vec, String, HashMap](./ch06-01-common-collections.md)
-  - [클로저](./ch06-02-closures.md)
-  - [이터레이터](./ch06-03-iterators.md)
-- [비동기 프로그래밍](./ch07-00-async.md)
-  - [async/await 기초](./ch07-01-async-await.md)
-  - [Tokio 런타임](./ch07-02-tokio.md)
-  - [Arc, Mutex와 공유 상태](./ch07-03-shared-state.md)
+- [합의 알고리즘](./ch09-03-consensus.md)
 - [미니프로젝트: Rust로 블록체인 만들기](./ch08-00-project-blockchain.md)
 
 ---
 
-# Part 2: 블록체인 기초
+# 2주차: Rust 심화 + 이더리움/Solidity
 
-- [블록체인이란 무엇인가](./ch09-00-what-is-blockchain.md)
-  - [해시 함수와 암호학 기초](./ch09-01-hash-cryptography.md)
-  - [블록과 체인 구조](./ch09-02-blocks-and-chain.md)
-  - [합의 알고리즘](./ch09-03-consensus.md)
+- [에러 처리](./ch04-00-error-handling.md)
+  - [panic!과 복구 불가능한 에러](./ch04-01-panic.md)
+  - [Result와 복구 가능한 에러](./ch04-02-result.md)
+  - [에러 전파와 ? 연산자](./ch04-03-propagation.md)
 - [이더리움 아키텍처](./ch10-00-ethereum.md)
   - [계정과 트랜잭션](./ch10-01-accounts-transactions.md)
   - [EVM과 가스](./ch10-02-evm-gas.md)
   - [스마트 컨트랙트 개요](./ch10-03-smart-contracts-overview.md)
-
----
-
-# Part 3: Solidity와 스마트 컨트랙트
-
+- [트레이트와 제네릭](./ch05-00-traits-generics.md)
+  - [제네릭 타입](./ch05-01-generics.md)
+  - [트레이트 정의와 구현](./ch05-02-traits.md)
+  - [수명(Lifetime)](./ch05-03-lifetimes.md)
 - [Solidity 기초](./ch11-00-solidity-basics.md)
   - [타입과 변수](./ch11-01-types-variables.md)
   - [함수와 제어자](./ch11-02-functions-modifiers.md)
@@ -64,16 +51,24 @@
   - [ERC-20 토큰](./ch13-01-erc20.md)
   - [ERC-721 NFT](./ch13-02-erc721.md)
   - [OpenZeppelin 활용](./ch13-03-openzeppelin.md)
-- [스마트 컨트랙트 심화](./ch14-00-advanced-contracts.md)
-  - [상속과 인터페이스](./ch14-01-inheritance.md)
-  - [프록시 패턴과 업그레이드](./ch14-02-proxy-patterns.md)
-  - [보안과 일반적인 취약점](./ch14-03-security.md)
 - [미니프로젝트: Token Vault](./ch15-00-project-token-vault.md)
 
 ---
 
-# Part 4: Solana와 Rust 블록체인
+# 3주차: 비동기 Rust + Solana + 컨트랙트 심화
 
+- [컬렉션과 이터레이터](./ch06-00-collections.md)
+  - [Vec, String, HashMap](./ch06-01-common-collections.md)
+  - [클로저](./ch06-02-closures.md)
+  - [이터레이터](./ch06-03-iterators.md)
+- [스마트 컨트랙트 심화](./ch14-00-advanced-contracts.md)
+  - [상속과 인터페이스](./ch14-01-inheritance.md)
+  - [프록시 패턴과 업그레이드](./ch14-02-proxy-patterns.md)
+  - [보안과 일반적인 취약점](./ch14-03-security.md)
+- [비동기 프로그래밍](./ch07-00-async.md)
+  - [async/await 기초](./ch07-01-async-await.md)
+  - [Tokio 런타임](./ch07-02-tokio.md)
+  - [Arc, Mutex와 공유 상태](./ch07-03-shared-state.md)
 - [Solana 아키텍처](./ch16-00-solana-architecture.md)
   - [계정 모델](./ch16-01-account-model.md)
   - [프로그램과 명령어](./ch16-02-programs-instructions.md)
@@ -86,7 +81,7 @@
 
 ---
 
-# Part 5: 실무 통합
+# 4주차: 실무 통합 + Platform 프로젝트
 
 - [Rust에서 Ethereum 연동 (Alloy)](./ch19-00-alloy.md)
   - [프로바이더와 컨트랙트 호출](./ch19-01-provider-calls.md)

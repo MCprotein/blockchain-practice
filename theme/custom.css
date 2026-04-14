@@ -5,31 +5,41 @@
 }
 
 .content main {
-    font-size: 1.25rem;
-    line-height: 1.9;
+    font-size: 1.4rem;
+    line-height: 2;
 }
 
 .sidebar .sidebar-scrollbox {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
 h1 {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     margin-top: 2em;
 }
 
 h2 {
-    font-size: 1.7rem;
+    font-size: 2rem;
     margin-top: 2em;
 }
 
 h3 {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     margin-top: 1.5em;
 }
 
+h4 {
+    font-size: 1.35rem;
+    margin-top: 1.2em;
+}
+
 table {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+}
+
+th, td {
+    padding: 0.6em 1em;
 }
 
 code {
@@ -37,8 +47,12 @@ code {
 }
 
 pre code {
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+li {
+    margin-bottom: 0.3em;
 }
 
 blockquote {
