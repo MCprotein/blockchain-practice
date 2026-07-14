@@ -1,0 +1,79 @@
+name: besu-qbft
+
+x-besu-common: &besu-common
+  image: hyperledger/besu:26.7.0
+  restart: "no"
+  stop_grace_period: 30s
+
+services:
+  node-1:
+    <<: *besu-common
+    command:
+      - --config-file=/config/config.toml
+    ports:
+      - "127.0.0.1:8545:8545"
+    networks:
+      qbft:
+        ipv4_address: 172.31.239.11
+    volumes:
+      - ./config.toml:/config/config.toml:ro
+      - ./generated/genesis.json:/config/genesis.json:ro
+      - ./nodes/node-1/data:/var/lib/besu
+
+  node-2:
+    <<: *besu-common
+    depends_on:
+      - node-1
+    command:
+      - --config-file=/config/config.toml
+      - --bootnodes=${BOOTNODE_ENODE:?run ./scripts/init.sh first}
+    ports:
+      - "127.0.0.1:8546:8545"
+    networks:
+      qbft:
+        ipv4_address: 172.31.239.12
+    volumes:
+      - ./config.toml:/config/config.toml:ro
+      - ./generated/genesis.json:/config/genesis.json:ro
+      - ./nodes/node-2/data:/var/lib/besu
+
+  node-3:
+    <<: *besu-common
+    depends_on:
+      - node-1
+    command:
+      - --config-file=/config/config.toml
+      - --bootnodes=${BOOTNODE_ENODE:?run ./scripts/init.sh first}
+    ports:
+      - "127.0.0.1:8547:8545"
+    networks:
+      qbft:
+        ipv4_address: 172.31.239.13
+    volumes:
+      - ./config.toml:/config/config.toml:ro
+      - ./generated/genesis.json:/config/genesis.json:ro
+      - ./nodes/node-3/data:/var/lib/besu
+
+  node-4:
+    <<: *besu-common
+    depends_on:
+      - node-1
+    command:
+      - --config-file=/config/config.toml
+      - --bootnodes=${BOOTNODE_ENODE:?run ./scripts/init.sh first}
+    ports:
+      - "127.0.0.1:8548:8545"
+    networks:
+      qbft:
+        ipv4_address: 172.31.239.14
+    volumes:
+      - ./config.toml:/config/config.toml:ro
+      - ./generated/genesis.json:/config/genesis.json:ro
+      - ./nodes/node-4/data:/var/lib/besu
+
+networks:
+  qbft:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.239.0/24

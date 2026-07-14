@@ -27,6 +27,15 @@
 - [ERC-20 명세](https://eips.ethereum.org/EIPS/eip-20)
 - [ERC-721 명세](https://eips.ethereum.org/EIPS/eip-721)
 
+### Besu와 프라이빗 Ethereum
+
+- [Besu 릴리스](https://github.com/hyperledger/besu/releases)
+- [Docker 이미지로 Besu 실행](https://docs.besu-eth.org/private-networks/get-started/install/run-docker-image)
+- [QBFT 프라이빗 네트워크 만들기](https://docs.besu-eth.org/private-networks/tutorials/qbft)
+- [QBFT 합의 설정](https://docs.besu-eth.org/private-networks/how-to/configure/consensus/qbft)
+- [수수료가 0인 개발망 설정](https://docs.besu-eth.org/private-networks/how-to/configure/free-gas)
+- [로컬 permissioning](https://docs.besu-eth.org/private-networks/how-to/use-permissioning/local)
+
 ### Solana와 Anchor
 
 - [Solana 핵심 개념](https://solana.com/docs/core)
@@ -45,5 +54,6 @@
 - Ethereum: Token Vault에 권한 모델과 공격용 mock을 추가하고 Foundry invariant test로 장부 조건을 검증한다.
 - Solana: PDA Counter나 Token Vault를 만들고 LiteSVM에서 정상 경로, 잘못된 서명자, 잘못된 시드를 테스트한다.
 - 프로토콜: 미니 체인의 서명, 상태 저장, 합의를 서로 분리해 구현하고 각 계층이 보장하지 않는 것도 문서화한다.
+- 노드 운영: 13장의 네 검증자를 서로 다른 호스트로 분리하고 방화벽, permissioning, 외부 서명기, 모니터링과 복구 절차를 추가한다.
 
 어느 갈래든 공통 원칙은 같다. 코드를 배포하기 전에 불변식을 문장으로 쓰고 실패 경로를 테스트하고 관리자와 업그레이드 권한을 문서화한다.

@@ -29,6 +29,13 @@ jobs:
       - name: Test Rust workspace
         run: cargo test --workspace
 
+      - name: Check Besu practice configuration
+        env:
+          BOOTNODE_ENODE: enode://placeholder@127.0.0.1:30303
+        run: |
+          bash -n practice/besu-qbft/scripts/*.sh
+          docker compose -f practice/besu-qbft/compose.yaml config --quiet
+
       - name: Install mdBook
         run: cargo install mdbook --locked
 

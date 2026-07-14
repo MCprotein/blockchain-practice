@@ -5,6 +5,7 @@
 - 공개 사이트: https://mcprotein.github.io/blockchain-practice/
 - 원문 목차: [`src/SUMMARY.md`](src/SUMMARY.md)
 - 실행 가능한 Rust 실습: [`practice/mini-chain`](practice/mini-chain)
+- 실행 가능한 Besu 실습: [`practice/besu-qbft`](practice/besu-qbft)
 
 ## 다루는 범위
 
@@ -14,8 +15,9 @@
 4. Solidity와 Foundry 테스트
 5. ERC-20·ERC-721, OpenZeppelin, Token Vault 보안
 6. Solana 계정·PDA·CPI와 Anchor
+7. Besu와 QBFT를 이용한 4노드 프라이빗 Ethereum
 
-Alloy, Besu, 특정 서비스 아키텍처, 시점에 따라 금방 낡는 생태계 통계는 핵심 과정에서 제외했습니다. 필요한 주제는 마지막 장의 공식 문서와 다음 학습 순서에서 이어갑니다.
+Alloy, 특정 서비스 아키텍처, 시점에 따라 금방 낡는 생태계 통계는 핵심 과정에서 제외했습니다. 필요한 주제는 마지막 장의 공식 문서와 다음 학습 순서에서 이어갑니다.
 
 ## 로컬 실행
 
@@ -39,15 +41,25 @@ cargo run -p mini-chain
 cargo test --workspace
 ```
 
+Besu 검증자 4개를 실행하고 상태를 확인합니다.
+
+```bash
+cd practice/besu-qbft
+./scripts/init.sh
+docker compose up -d
+./scripts/status.sh
+docker compose down
+```
+
 ## 코드 블록의 검증 범위
 
 - `rust`: `mdbook test`가 컴파일·실행하는 독립 예제
 - `rust,compile_fail`: 실패해야 정상인 컴파일 예제
 - `rust,ignore`: 외부 크레이트나 프로젝트 문맥이 필요한 읽기용 코드
-- `solidity`, `bash`: 각 도구에서 따로 실행할 예제
+- `solidity`, `bash`, `json`, `toml`, `yaml`: 각 도구나 설정 파일에서 따로 사용할 예제
 - `text`: 출력, 구조, 개념도
 
-`mdbook test` 통과는 `rust,ignore`, Solidity, shell 예제까지 실행했다는 뜻이 아닙니다. 저장소에 Foundry와 Anchor 프로젝트를 포함하지 않으므로 해당 예제는 공식 문서와 API 형태를 대조했지만 로컬 실행 검증 대상은 아닙니다.
+`mdbook test` 통과는 `rust,ignore`, Solidity, shell 예제까지 실행했다는 뜻이 아닙니다. Besu 실습은 Docker Compose로 별도 검증합니다. 저장소에 Foundry와 Anchor 프로젝트를 포함하지 않으므로 해당 예제는 공식 문서와 API 형태를 대조했지만 로컬 실행 검증 대상은 아닙니다.
 
 ## 검증 명령
 
@@ -55,6 +67,8 @@ cargo test --workspace
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
+bash -n practice/besu-qbft/scripts/*.sh
+BOOTNODE_ENODE=enode://placeholder@127.0.0.1:30303 docker compose -f practice/besu-qbft/compose.yaml config --quiet
 mdbook build
 mdbook test
 git diff --check
