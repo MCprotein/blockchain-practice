@@ -2,4 +2,3 @@
 book/
 .omx/
 target/
-Cargo.lock

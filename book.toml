@@ -1,5 +1,5 @@
 [book]
-title = "Rust + Blockchain 완전 정복"
+title = "Rust로 이해하는 블록체인과 스마트 컨트랙트"
 authors = []
 language = "ko"
 src = "src"

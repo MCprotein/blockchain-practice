@@ -1,6 +1,5 @@
 [workspace]
 resolver = "3"
 members = [
-    "practice/basic-module",
-    "practice/cryptography",
+    "practice/mini-chain",
 ]
